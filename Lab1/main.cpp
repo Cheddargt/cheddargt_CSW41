@@ -46,6 +46,8 @@
 
 #include <iostream>
 using std::cout;
+using std::cin;
+using std::endl;
 
 #include "template.h"
 
@@ -81,7 +83,16 @@ using std::cout;
  */
 int main(int argc, char ** argv)
 {
-
- 
-    return 0;
+  cout << "Lab 1 - Gustavo Zeni e Lucas Perin\n";
+  cout << __DATE__<< endl;
+  cout <<__TIME__<< endl;
+  while (1)
+    {
+      float valor1, valor2;
+    
+      cin >> valor1 >> valor2;
+      
+      cout << "Soma = ";
+      cout <<(valor1 + valor2) << endl;
+    }
 }

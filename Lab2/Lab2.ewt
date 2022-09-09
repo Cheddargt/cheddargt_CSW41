@@ -1432,10 +1432,13 @@
     <group>
         <name>Source</name>
         <file>
-            <name>$PROJ_DIR$\src\blinky.c</name>
-        </file>
-        <file>
             <name>$PROJ_DIR$\src\startup_ewarm.c</name>
         </file>
     </group>
+    <file>
+        <name>$PROJ_DIR$\..\..\..\Lab2.cpp</name>
+    </file>
+    <file>
+        <name>$PROJ_DIR$\lab2.h</name>
+    </file>
 </project>

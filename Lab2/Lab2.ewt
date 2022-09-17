@@ -1436,9 +1436,12 @@
         </file>
     </group>
     <file>
-        <name>$PROJ_DIR$\..\..\..\Lab2.cpp</name>
+        <name>$PROJ_DIR$\Lab2.cpp</name>
     </file>
     <file>
         <name>$PROJ_DIR$\lab2.h</name>
+    </file>
+    <file>
+        <name>$PROJ_DIR$\template.h</name>
     </file>
 </project>

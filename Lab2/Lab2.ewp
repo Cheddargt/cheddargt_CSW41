@@ -40,7 +40,7 @@
                 </option>
                 <option>
                     <name>Output description</name>
-                    <state>Automatic choice of formatter, without multibyte support.</state>
+                    <state>Automatic choice of formatter, with multibyte support.</state>
                 </option>
                 <option>
                     <name>GOutputBinary</name>
@@ -159,7 +159,7 @@
                 </option>
                 <option>
                     <name>OGPrintfMultibyteSupport</name>
-                    <state>0</state>
+                    <state>1</state>
                 </option>
                 <option>
                     <name>OGScanfVariant</name>
@@ -668,7 +668,7 @@
             <data>
                 <extensions></extensions>
                 <cmdline></cmdline>
-                <hasPrio>0</hasPrio>
+                <hasPrio>48</hasPrio>
                 <buildSequence>inputOutputBased</buildSequence>
             </data>
         </settings>
@@ -1089,9 +1089,12 @@
         </file>
     </group>
     <file>
-        <name>$PROJ_DIR$\..\..\..\Lab2.cpp</name>
+        <name>$PROJ_DIR$\Lab2.cpp</name>
     </file>
     <file>
         <name>$PROJ_DIR$\lab2.h</name>
+    </file>
+    <file>
+        <name>$PROJ_DIR$\template.h</name>
     </file>
 </project>

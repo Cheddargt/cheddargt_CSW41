@@ -74,10 +74,11 @@ using std::endl;
  *
  *------------------------------------------------------------------------------*/
 	volatile float tempo = 0;
-	volatile int64_t timer = 0;
+	volatile int32_t timer = 0;
         volatile int32_t chave = 0;
         volatile int32_t valor;
-        uint32_t max_tick = 30000000;
+        volatile int32_t clocks = 0;
+        uint32_t max_tick = 15000000;
 	uint32_t ui32SysClock; //Clock em Hz
 
 /*------------------------------------------------------------------------------
@@ -140,10 +141,11 @@ int main(int argc, char ** argv)
         chave = 0;
         timer = 0;
         valor = 0;
+        clocks = 0;
 	GPIOPinWrite(GPIO_PORTN_BASE, GPIO_PIN_1, GPIO_PIN_1); //LED Ligado
         SysTickPeriodSet(max_tick);
         SysTickEnable(); //Contador
-	while((timer < 12) && (!chave))
+	while((timer < 24) && (!chave))
 	{
             
 	}
@@ -155,18 +157,20 @@ int main(int argc, char ** argv)
           tempo = valor;
           tempo = tempo/max_tick;
           tempo = tempo + timer; //Tempo em quartos (1/4) de segundo
-          tempo = tempo * 250; //Tempo em segundos
+          tempo = tempo * 125; //Tempo em segundos
+          clocks = timer * max_tick;
+          clocks = clocks + valor;
           //tempo += valor;
           //double aux = 0;
           //cout << "timer: " << timer << " max_tick: " << max_tick << "\n";
           //cout << "valor: " << valor << " tempo: " << tempo << "\n";
           //aux = tempo/120000000;
           //cout << tempo << "\n";
-          cout <<"T: " << tempo << "ms" << "\n";
+          cout <<"Tempo de resposta: " << clocks << " clocks, "<< tempo << "ms" << "\n";
         }
         else
         {
-          cout <<"T: 3s\n";
+          cout <<"Tempo máximo de 3s atingido\n";
           SysTickDisable();
         }
   }

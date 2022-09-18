@@ -75,7 +75,7 @@ using std::endl;
  *
  *------------------------------------------------------------------------------*/
 	volatile uint32_t tempo = 0;
-	volatile uint32_t timer = 0;
+	volatile uint64_t timer = 0;
         volatile uint32_t chave = 0;
         uint32_t valor;
         uint32_t max_tick = 30000000;
@@ -133,7 +133,7 @@ int main(int argc, char ** argv)
 
   initGPIO();
   initInterrupt();
-  SysTickPeriodSet(max_tick);
+
 	
   while (1)
   {
@@ -142,6 +142,7 @@ int main(int argc, char ** argv)
         timer = 0;
         valor = 0;
 	GPIOPinWrite(GPIO_PORTN_BASE, GPIO_PIN_1, GPIO_PIN_1); //LED Ligado
+        SysTickPeriodSet(max_tick);
         SysTickEnable(); //Contador
 	while((timer < 12) && (!chave))
 	{
@@ -160,7 +161,6 @@ int main(int argc, char ** argv)
           //aux = tempo/120000000;
           //cout << aux << "\n";
           cout <<"T: " << (tempo/120000000)*1000 << "ms" << "\n";
-          SysTickDisable();
         }
         else
         {

@@ -158,14 +158,8 @@ int main(int argc, char ** argv)
           tempo = tempo/max_tick;
           tempo = tempo + timer; //Tempo em quartos (1/4) de segundo
           tempo = tempo * 125; //Tempo em segundos
-          clocks = timer * max_tick;
-          clocks = clocks + valor;
-          //tempo += valor;
-          //double aux = 0;
-          //cout << "timer: " << timer << " max_tick: " << max_tick << "\n";
-          //cout << "valor: " << valor << " tempo: " << tempo << "\n";
-          //aux = tempo/120000000;
-          //cout << tempo << "\n";
+          clocks = timer * max_tick; 
+          clocks = clocks + valor; //Numero de clocks
           cout <<"Tempo de resposta: " << clocks << " clocks, "<< tempo << "ms" << "\n";
         }
         else
@@ -188,49 +182,15 @@ void initGPIO(void) {
   
 
   SysTickIntEnable();
-  
-  /*
-  // Enable the GPIO port that is used for the on-board LED.
-  SysCtlPeripheralEnable(SYSCTL_PERIPH_GPION);
-
-  // Check if the peripheral access is enabled.
-  while(!SysCtlPeripheralReady(SYSCTL_PERIPH_GPION))
-  {
-  }
-
-  // Enable the GPIOJ peripheral
-  SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOJ);
-  
-  // Wait for the GPIOJ module to be ready.
-  while(!SysCtlPeripheralReady(SYSCTL_PERIPH_GPIOJ))
-  {
-  }
-  
-  // Enable the GPIO pin for the LED (PN0).  Set the direction as output, and
-  // enable the GPIO pin for digital function.
-  GPIOPinTypeGPIOOutput(GPIO_PORTN_BASE, GPIO_PIN_0);
-  
-  // Enable the BTN pin (PJ0).  Set the direction as input, and
-  // enable the GPIO pin for digital function.
-  GPIOPinTypeGPIOInput(GPIO_PORTJ_BASE, GPIO_PIN_0);    
-    
-  */
 }
 
 void initInterrupt()
 {
  
-   /*
-   IntMasterEnable();
-   GPIOIntTypeSet(GPIO_PORTJ_BASE, GPIO_PIN_0, GPIO_LOW_LEVEL);
-   IntEnable(INT_GPIOJ_TM4C129);
-   */
-
-   // Enables the specified GPIO interruputs
+    // Enables the specified GPIO interruputs
    GPIOIntEnable(GPIO_PORTJ_BASE, GPIO_INT_PIN_0);
   
-   // Set the specified type in the specified pin (high_level/low_level),
-   // (falling_edge/rising_edge)
+   // Set the specified type in the specified pin
    GPIOIntTypeSet(GPIO_PORTJ_BASE, GPIO_PIN_0, GPIO_LOW_LEVEL);
    
    // Enable the interrupt for PORTJ.
@@ -238,10 +198,7 @@ void initInterrupt()
    
    // Set the priority
    IntPrioritySet(INT_GPIOJ, 0x00);
-   
-   // Register the handler for GPIOJ interrupts
-   //IntRegister(INT_GPIOJ, GPIOJIntHandler);
-   
+     
    IntMasterEnable(); // Enable the Master key of interrupt.
     
 }

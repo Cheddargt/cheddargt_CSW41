@@ -23,24 +23,6 @@
 
 /*------------------------------------------------------------------------------
  *
- *      Use Doxygen to report lab results
- *
- *------------------------------------------------------------------------------*/
-/** @mainpage Results from Lab1
- *
- * @section Ouput Values
- *
- * The values of ...
- *
- * @section Terminal
- *
- * @subsection Output
- *
- * etc...
- */
-
-/*------------------------------------------------------------------------------
- *
  *      File includes
  *
  *------------------------------------------------------------------------------*/
@@ -76,8 +58,9 @@ using std::endl;
 	volatile float tempo = 0;
 	volatile int32_t timer = 0;
         volatile int32_t chave = 0;
-        volatile int32_t valor;
+        volatile int32_t valor = 0;
         volatile int32_t clocks = 0;
+        volatile int32_t on = 0;
         uint32_t max_tick = 15000000;
 	uint32_t ui32SysClock; //Clock em Hz
 
@@ -106,14 +89,16 @@ extern void SysTickIntHandler(void)
 
 extern void GPIOJIntHandler(void)
 {	
-    // Set GPIO high to indicate entry to this interrupt handler.
-    //GPIOPinWrite(GPIO_PORTJ_BASE, GPIO_PIN_0, GPIO_PIN_0);
-
-    SysTickDisable();
-    chave = 1;
+    GPIOIntDisable(GPIO_PORTJ_BASE, GPIO_INT_PIN_0);
+    if (on)
+    {
+      SysTickDisable();
+      chave = 1;
+    }
+    else
+      on = 1;
 	
-    // Set GPIO low to indicate exit from this interrupt handler.
-    //MAP_GPIOPinWrite(GPIO_PORTJ_BASE, GPIO_PIN_0, 0);
+   GPIOIntEnable(GPIO_PORTJ_BASE, GPIO_INT_PIN_0);
 }
 /**
  * Main function.
@@ -142,6 +127,7 @@ int main(int argc, char ** argv)
         timer = 0;
         valor = 0;
         clocks = 0;
+        on = 1;
 	GPIOPinWrite(GPIO_PORTN_BASE, GPIO_PIN_1, GPIO_PIN_1); //LED Ligado
         SysTickPeriodSet(max_tick);
         SysTickEnable(); //Contador
@@ -167,6 +153,9 @@ int main(int argc, char ** argv)
           cout <<"Tempo máximo de 3s atingido\n";
           SysTickDisable();
         }
+        on = 0;
+        cout <<"Pressione SW1 para recomecar\n\n";
+        while (!on){}
   }
 }	
 

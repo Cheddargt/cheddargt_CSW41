@@ -45,7 +45,6 @@
  *
  *------------------------------------------------------------------------------*/
 #include <stdint.h>
-
 #include <iostream>
 using std::cout;
 using std::cin;
@@ -74,10 +73,10 @@ using std::endl;
  *      Global vars
  *
  *------------------------------------------------------------------------------*/
-	volatile uint32_t tempo = 0;
-	volatile uint64_t timer = 0;
-        volatile uint32_t chave = 0;
-        uint32_t valor;
+	volatile float tempo = 0;
+	volatile int64_t timer = 0;
+        volatile int32_t chave = 0;
+        volatile int32_t valor;
         uint32_t max_tick = 30000000;
 	uint32_t ui32SysClock; //Clock em Hz
 
@@ -137,7 +136,7 @@ int main(int argc, char ** argv)
 	
   while (1)
   {
-	tempo = 0;
+	tempo = 0.0;
         chave = 0;
         timer = 0;
         valor = 0;
@@ -153,14 +152,17 @@ int main(int argc, char ** argv)
         {
           // Current iteration 
           valor = SysTickValueGet();
-          tempo = timer * max_tick + valor;
+          tempo = valor;
+          tempo = tempo/max_tick;
+          tempo = tempo + timer; //Tempo em quartos (1/4) de segundo
+          tempo = tempo * 250; //Tempo em segundos
           //tempo += valor;
           //double aux = 0;
           //cout << "timer: " << timer << " max_tick: " << max_tick << "\n";
           //cout << "valor: " << valor << " tempo: " << tempo << "\n";
           //aux = tempo/120000000;
-          //cout << aux << "\n";
-          cout <<"T: " << (tempo/120000000)*1000 << "ms" << "\n";
+          //cout << tempo << "\n";
+          cout <<"T: " << tempo << "ms" << "\n";
         }
         else
         {

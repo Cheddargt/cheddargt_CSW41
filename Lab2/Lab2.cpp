@@ -84,7 +84,6 @@ void initInterrupt(void);
 extern void SysTickIntHandler(void)
 {
     timer++;
-    //SysTickEnable();
 }
 
 extern void GPIOJIntHandler(void)
@@ -140,7 +139,7 @@ int main(int argc, char ** argv)
         {
           // Current iteration 
           valor = SysTickValueGet();
-          tempo = valor;
+          tempo = valor - max_tick; //Systick conta decrementando
           tempo = tempo/max_tick;
           tempo = tempo + timer; //Tempo em quartos (1/4) de segundo
           tempo = tempo * 125; //Tempo em segundos

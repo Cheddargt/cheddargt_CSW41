@@ -62,7 +62,7 @@
                 </option>
                 <option>
                     <name>RTDescription</name>
-                    <state>Use the normal configuration of the C/C++ runtime library. No locale interface, C locale, no file descriptor support, no multibytes in printf and scanf, and no hex floats in strtod.</state>
+                    <state>A compact configuration of the C/C++14 runtime library. No locale interface, C locale, no file descriptor support, no multibytes in printf and scanf, and no hex floats in strtod.</state>
                 </option>
                 <option>
                     <name>OGProductVersion</name>
@@ -1084,9 +1084,6 @@
     <group>
         <name>Source</name>
         <file>
-            <name>$PROJ_DIR$\src\blinky.c</name>
-        </file>
-        <file>
             <name>$PROJ_DIR$\src\startup_ewarm.c</name>
         </file>
     </group>
@@ -1094,6 +1091,9 @@
         <name>$PROJ_DIR$\images.c</name>
     </file>
     <file>
-        <name>$PROJ_DIR$\Lab3.asm</name>
+        <name>$PROJ_DIR$\Lab3.s</name>
+    </file>
+    <file>
+        <name>$PROJ_DIR$\top_level.c</name>
     </file>
 </project>

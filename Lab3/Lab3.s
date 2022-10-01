@@ -8,7 +8,6 @@ THUMB
 EightBitHistogram:
 		MUL		R0, R0, R1 ;Tamanho da imagem
 		CMP 	R0, #65536
-		IT      GT	
 		BGT	Return_Zero
 		
 		MOV		R1,#0
@@ -21,17 +20,16 @@ Loop_Zero:
 		ADDLT	R1,#1
 		BLT	Loop_Zero
 		
-		SUB		R3,#255 		
+		SUB		R3,#256 		
 		MOV		R1,#0
 		
 Histograma:
 		LDRB	R4,[R2],#1
-		LDRB	R5,[R3,R4,LSL#2]
+		LDRB	R5,[R3,R4,LSL#2]        ;r5=(r3+(r4<<2))
 		ADD		R5,#1
 		STRB	R5,[R3,R4,LSL#2]
+                ADD	R1,#1
 		CMP		R1,R0
-		ITT     LT
-		ADDLT	R1,#1
 		BLT		Histograma
 		B		Final
 

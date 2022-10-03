@@ -139,12 +139,12 @@ int main(int argc, char ** argv)
         {
           // Current iteration 
           valor = SysTickValueGet();
-          tempo = valor - max_tick; //Systick conta decrementando
+          tempo = max_tick - valor; //Systick conta decrementando
           tempo = tempo/max_tick;
-          tempo = tempo + timer; //Tempo em quartos (1/4) de segundo
-          tempo = tempo * 0.125; //Tempo em segundos
+          tempo += timer; //Tempo em quartos (1/4) de segundo
+          tempo = tempo * 125; //Tempo em ms
           clocks = timer * max_tick; 
-          clocks = clocks + valor; //Numero de clocks
+          clocks = clocks + (max_tick - valor); //Numero de clocks
           cout <<"Tempo de resposta: " << clocks << " clocks, "<< tempo << "ms" << "\n";
         }
         else

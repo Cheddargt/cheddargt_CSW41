@@ -2846,7 +2846,19 @@
         </settings>
     </configuration>
     <file>
-        <name>$PROJ_DIR$\Final.cpp</name>
+        <name>$PROJ_DIR$\joystick.cpp</name>
+    </file>
+    <file>
+        <name>$PROJ_DIR$\lcd.cpp</name>
+    </file>
+    <file>
+        <name>$PROJ_DIR$\main.cpp</name>
+    </file>
+    <file>
+        <name>$PROJ_DIR$\pause_button.cpp</name>
+    </file>
+    <file>
+        <name>$PROJ_DIR$\sistick.cpp</name>
     </file>
     <file>
         <name>$PROJ_DIR$\startup_ewarm.c</name>

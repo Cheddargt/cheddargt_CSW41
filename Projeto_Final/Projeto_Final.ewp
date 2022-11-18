@@ -44,11 +44,11 @@
                 </option>
                 <option>
                     <name>Input description</name>
-                    <state>Automatic choice of formatter, without multibyte support.</state>
+                    <state>Full formatting, without multibyte support.</state>
                 </option>
                 <option>
                     <name>Output description</name>
-                    <state>Automatic choice of formatter, with multibyte support.</state>
+                    <state>Full formatting, with multibyte support.</state>
                 </option>
                 <option>
                     <name>GOutputBinary</name>
@@ -159,7 +159,7 @@
                 <option>
                     <name>OGPrintfVariant</name>
                     <version>0</version>
-                    <state>0</state>
+                    <state>1</state>
                 </option>
                 <option>
                     <name>OGPrintfMultibyteSupport</name>
@@ -168,7 +168,7 @@
                 <option>
                     <name>OGScanfVariant</name>
                     <version>0</version>
-                    <state>0</state>
+                    <state>1</state>
                 </option>
                 <option>
                     <name>OGScanfMultibyteSupport</name>
@@ -226,9 +226,7 @@
                 </option>
                 <option>
                     <name>CCDefines</name>
-                    <state>ewarm</state>
-                    <state>PART_TM4C1294NCPDT</state>
-                    <state>TARGET_IS_TM4C129_RA1</state>
+                    <state></state>
                 </option>
                 <option>
                     <name>CCPreprocFile</name>
@@ -349,8 +347,7 @@
                 </option>
                 <option>
                     <name>CCIncludePath2</name>
-                    <state>C:\Users\lucas\Documents\UTFPR\Semestre\Sistemas Embarcados\LucasLeyser\TivaWare_C_Series-2.2.0.295\driverlib</state>
-                    <state>C:\Users\lucas\Documents\UTFPR\Semestre\Sistemas Embarcados\LucasLeyser\TivaWare_C_Series-2.2.0.295\inc</state>
+                    <state></state>
                 </option>
                 <option>
                     <name>CCStdIncCheck</name>
@@ -594,7 +591,7 @@
                 </option>
                 <option>
                     <name>AOutputFile</name>
-                    <state></state>
+                    <state>$FILE_BNAME$.o</state>
                 </option>
                 <option>
                     <name>ALimitErrorsCheck</name>
@@ -648,7 +645,7 @@
                 </option>
                 <option>
                     <name>OOCOutputFile</name>
-                    <state></state>
+                    <state>Projeto_Final.srec</state>
                 </option>
                 <option>
                     <name>OOCCommandLineProducer</name>
@@ -666,7 +663,7 @@
             <data>
                 <extensions></extensions>
                 <cmdline></cmdline>
-                <hasPrio>0</hasPrio>
+                <hasPrio>1</hasPrio>
                 <buildSequence>inputOutputBased</buildSequence>
             </data>
         </settings>
@@ -803,15 +800,15 @@
                 </option>
                 <option>
                     <name>IlinkAutoLibEnable</name>
-                    <state>0</state>
+                    <state>1</state>
                 </option>
                 <option>
                     <name>IlinkAdditionalLibs</name>
-                    <state></state>
+                    <state>C:\Users\lucas\Documents\UTFPR\Semestre\Sistemas Embarcados\LucasLeyser\TivaWare_C_Series-2.2.0.295\driverlib\ewarm\Exe\driverlib.a</state>
                 </option>
                 <option>
                     <name>IlinkOverrideProgramEntryLabel</name>
-                    <state>1</state>
+                    <state>0</state>
                 </option>
                 <option>
                     <name>IlinkProgramEntryLabelSelect</name>
@@ -2145,7 +2142,19 @@
         </settings>
     </configuration>
     <file>
-        <name>$PROJ_DIR$\Final.cpp</name>
+        <name>$PROJ_DIR$\joystick.cpp</name>
+    </file>
+    <file>
+        <name>$PROJ_DIR$\lcd.cpp</name>
+    </file>
+    <file>
+        <name>$PROJ_DIR$\main.cpp</name>
+    </file>
+    <file>
+        <name>$PROJ_DIR$\pause_button.cpp</name>
+    </file>
+    <file>
+        <name>$PROJ_DIR$\sistick.cpp</name>
     </file>
     <file>
         <name>$PROJ_DIR$\startup_ewarm.c</name>

@@ -24,9 +24,8 @@
 //*****************************************************************************
 
 #include <stdint.h>
-#include "hw_nvic.h"
-#include "hw_types.h"
-#include "Final.h"
+#include "../../TivaWare_C_Series-2.2.0.295/inc/hw_nvic.h"
+#include "../../TivaWare_C_Series-2.2.0.295/inc/hw_types.h"
 
 //*****************************************************************************
 //
@@ -44,6 +43,8 @@ void ResetISR(void);
 static void NmiSR(void);
 static void FaultISR(void);
 static void IntDefaultHandler(void);
+extern void pause_IntHandler(void);
+extern void SysTickIntHandler(void);
 
 //*****************************************************************************
 //
@@ -97,7 +98,7 @@ __root const uVectorEntry __vector_table[] @ ".intvec" =
     IntDefaultHandler,                      // Debug monitor handler
     0,                                      // Reserved
     IntDefaultHandler,                      // The PendSV handler
-    SysTick_IntHandler,                     // The SysTick handler
+    SysTickIntHandler,                     // The SysTick handler
     IntDefaultHandler,                      // GPIO Port A
     IntDefaultHandler,                      // GPIO Port B
     IntDefaultHandler,                      // GPIO Port C
@@ -151,7 +152,7 @@ __root const uVectorEntry __vector_table[] @ ".intvec" =
     IntDefaultHandler,                      // External Bus Interface 0
     IntDefaultHandler,                      // GPIO Port J
     IntDefaultHandler,                      // GPIO Port K
-    GPIOL_IntHandler,                      // GPIO Port L
+    pause_IntHandler,                      // GPIO Port L
     IntDefaultHandler,                      // SSI2 Rx and Tx
     IntDefaultHandler,                      // SSI3 Rx and Tx
     IntDefaultHandler,                      // UART3 Rx and Tx

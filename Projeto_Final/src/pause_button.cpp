@@ -1,11 +1,11 @@
 #include <stdint.h>
 
-#include "../../TivaWare_C_Series-2.2.0.295/inc/hw_memmap.h"
-#include "../../TivaWare_C_Series-2.2.0.295/inc/hw_ints.h"
-#include "../../TivaWare_C_Series-2.2.0.295/driverlib/gpio.h"
-#include "../../TivaWare_C_Series-2.2.0.295/driverlib/sysctl.h"
-#include "../../TivaWare_C_Series-2.2.0.295/driverlib/pin_map.h"
-#include "../../TivaWare_C_Series-2.2.0.295/driverlib/interrupt.h"
+#include "inc/hw_memmap.h"
+#include "inc/hw_ints.h"
+#include "driverlib/gpio.h"
+#include "driverlib/sysctl.h"
+#include "driverlib/pin_map.h"
+#include "driverlib/interrupt.h"
 
 bool pause = false;
 extern void pause_IntHandler(void);

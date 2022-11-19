@@ -24,8 +24,8 @@
 //*****************************************************************************
 
 #include <stdint.h>
-#include "../../TivaWare_C_Series-2.2.0.295/inc/hw_nvic.h"
-#include "../../TivaWare_C_Series-2.2.0.295/inc/hw_types.h"
+#include "inc/hw_nvic.h"
+#include "inc/hw_types.h"
 
 //*****************************************************************************
 //

@@ -44,11 +44,11 @@
                 </option>
                 <option>
                     <name>Input description</name>
-                    <state>Full formatting, without multibyte support.</state>
+                    <state>Automatic choice of formatter, without multibyte support.</state>
                 </option>
                 <option>
                     <name>Output description</name>
-                    <state>Full formatting, with multibyte support.</state>
+                    <state>Automatic choice of formatter, with multibyte support.</state>
                 </option>
                 <option>
                     <name>GOutputBinary</name>
@@ -159,7 +159,7 @@
                 <option>
                     <name>OGPrintfVariant</name>
                     <version>0</version>
-                    <state>1</state>
+                    <state>0</state>
                 </option>
                 <option>
                     <name>OGPrintfMultibyteSupport</name>
@@ -168,7 +168,7 @@
                 <option>
                     <name>OGScanfVariant</name>
                     <version>0</version>
-                    <state>1</state>
+                    <state>0</state>
                 </option>
                 <option>
                     <name>OGScanfMultibyteSupport</name>
@@ -347,7 +347,8 @@
                 </option>
                 <option>
                     <name>CCIncludePath2</name>
-                    <state></state>
+                    <state>$PROJ_DIR$\..</state>
+                    <state>$PROJ_DIR$\..\..\TivaWare_C_Series-2.2.0.295</state>
                 </option>
                 <option>
                     <name>CCStdIncCheck</name>
@@ -368,7 +369,7 @@
                 <option>
                     <name>CCOptStrategy</name>
                     <version>0</version>
-                    <state>0</state>
+                    <state>1</state>
                 </option>
                 <option>
                     <name>CCOptLevelSlave</name>
@@ -404,7 +405,7 @@
                 </option>
                 <option>
                     <name>IccCppInlineSemantics</name>
-                    <state>0</state>
+                    <state>1</state>
                 </option>
                 <option>
                     <name>IccCmsis</name>
@@ -421,7 +422,7 @@
                 <option>
                     <name>CCOptStrategySlave</name>
                     <version>0</version>
-                    <state>0</state>
+                    <state>1</state>
                 </option>
                 <option>
                     <name>CCGuardCalls</name>
@@ -805,6 +806,7 @@
                 <option>
                     <name>IlinkAdditionalLibs</name>
                     <state>C:\Users\lucas\Documents\UTFPR\Semestre\Sistemas Embarcados\LucasLeyser\TivaWare_C_Series-2.2.0.295\driverlib\ewarm\Exe\driverlib.a</state>
+                    <state>C:\Users\lucas\Documents\UTFPR\Semestre\Sistemas Embarcados\LucasLeyser\TivaWare_C_Series-2.2.0.295\grlib\ewarm\Exe\grlib.a</state>
                 </option>
                 <option>
                     <name>IlinkOverrideProgramEntryLabel</name>
@@ -2142,21 +2144,24 @@
         </settings>
     </configuration>
     <file>
-        <name>$PROJ_DIR$\joystick.cpp</name>
+        <name>$PROJ_DIR$\src\cfaf128x128x16.c</name>
     </file>
     <file>
-        <name>$PROJ_DIR$\lcd.cpp</name>
+        <name>$PROJ_DIR$\src\joystick.cpp</name>
     </file>
     <file>
-        <name>$PROJ_DIR$\main.cpp</name>
+        <name>$PROJ_DIR$\src\lcd.cpp</name>
     </file>
     <file>
-        <name>$PROJ_DIR$\pause_button.cpp</name>
+        <name>$PROJ_DIR$\src\main.cpp</name>
     </file>
     <file>
-        <name>$PROJ_DIR$\sistick.cpp</name>
+        <name>$PROJ_DIR$\src\pause_button.cpp</name>
     </file>
     <file>
-        <name>$PROJ_DIR$\startup_ewarm.c</name>
+        <name>$PROJ_DIR$\src\sistick.cpp</name>
+    </file>
+    <file>
+        <name>$PROJ_DIR$\src\startup_ewarm.c</name>
     </file>
 </project>

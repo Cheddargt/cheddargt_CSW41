@@ -16,10 +16,10 @@
  *------------------------------------------------------------------------------*/
 #include <stdint.h>
 
-#include "../../TivaWare_C_Series-2.2.0.295/inc/hw_memmap.h"
-#include "../../TivaWare_C_Series-2.2.0.295/driverlib/gpio.h"
-#include "../../TivaWare_C_Series-2.2.0.295/driverlib/interrupt.h"
-#include "../../TivaWare_C_Series-2.2.0.295/driverlib/sysctl.h"
+#include "inc/hw_memmap.h"
+#include "driverlib/gpio.h"
+#include "driverlib/interrupt.h"
+#include "driverlib/sysctl.h"
 
 /*------------------------------------------------------------------------------
  *
@@ -58,6 +58,7 @@ extern void updateJOY(void);
 extern void initPAUSE(void);
 extern void initSysTick(void);
 extern void initLCD(void); 
+
 
 /**
  * Main function.

@@ -1,9 +1,9 @@
 #include <stdint.h>
 
-#include "../../TivaWare_C_Series-2.2.0.295/driverlib/adc.h"
-#include "../../TivaWare_C_Series-2.2.0.295/driverlib/gpio.h"
-#include "../../TivaWare_C_Series-2.2.0.295/driverlib/sysctl.h"
-#include "../../TivaWare_C_Series-2.2.0.295/inc/hw_memmap.h"
+#include "driverlib/adc.h"
+#include "driverlib/gpio.h"
+#include "driverlib/sysctl.h"
+#include "inc/hw_memmap.h"
 
 uint32_t joy_Y = 0;
 uint32_t joy_X = 0;

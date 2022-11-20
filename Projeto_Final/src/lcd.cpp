@@ -21,7 +21,7 @@ void DispMessage(void)
 	GrContextBackgroundSet(&sContext, ClrBlack);
 
 
-	GrStringDraw(&sContext,"Exemplo", -1, 0, (sContext.psFont->ui8Height+2)*0, true);
+	GrStringDraw(&sContext,"Meu Projeto", -1, 0, (sContext.psFont->ui8Height+2)*0, true);
 	GrStringDraw(&sContext,"Tiva + BoosterPack", -1, 0, (sContext.psFont->ui8Height+2)*1, true);
 	GrStringDraw(&sContext,"---------------------", -1, 0, (sContext.psFont->ui8Height+2)*2, true);
 }

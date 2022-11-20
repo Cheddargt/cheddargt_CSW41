@@ -20,10 +20,10 @@ void initTela(void)
     GrContextBackgroundSet(&sContext, ClrBlack);
 
 
-    GrStringDraw(&sContext,"EMBEDDED SNAKE", -1, 0, (sContext.psFont->ui8Height+2)*0, true);
-    GrStringDraw(&sContext,"---------------------", -1, 0, (sContext.psFont->ui8Height+2)*1, true);
-    GrStringDraw(&sContext,"PRESS PAUSE BUTTON", -1, 0, (sContext.psFont->ui8Height+2)*2, true);
-    GrStringDraw(&sContext,"TO START", -1, 0, (sContext.psFont->ui8Height+2)*3, true);
+    GrStringDraw(&sContext,"EMBEDDED SNAKE", -1, 0, (sContext.psFont->ui8Height+2)*0, false);
+    GrStringDraw(&sContext,"---------------------", -1, 0, (sContext.psFont->ui8Height+2)*1, false);
+    GrStringDraw(&sContext,"PRESS PAUSE BUTTON", -1, 0, (sContext.psFont->ui8Height+2)*2, false);
+    GrStringDraw(&sContext,"TO START", -1, 0, (sContext.psFont->ui8Height+2)*3, false);
 }
 
 void initBackground(void)

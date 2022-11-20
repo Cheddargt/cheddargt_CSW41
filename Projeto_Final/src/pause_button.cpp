@@ -29,12 +29,10 @@ void initPAUSE(void)
 
 extern void pause_IntHandler(void)
 {   
-    // Apenas troca o estado da flag "pause"
-    //GPIOIntDisable(GPIO_PORTL_BASE, GPIO_INT_PIN_1);
     if (pause)
       pause = false;
     else
       pause = true;
     
-    //GPIOIntEnable(GPIO_PORTL_BASE, GPIO_INT_PIN_1);
+    //Parar os dois timers
 }

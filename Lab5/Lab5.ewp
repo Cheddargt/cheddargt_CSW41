@@ -44,11 +44,11 @@
                 </option>
                 <option>
                     <name>Input description</name>
-                    <state>Automatic choice of formatter, without multibyte support.</state>
+                    <state>Full formatting, without multibyte support.</state>
                 </option>
                 <option>
                     <name>Output description</name>
-                    <state>Automatic choice of formatter, with multibyte support.</state>
+                    <state>Full formatting, without multibyte support.</state>
                 </option>
                 <option>
                     <name>GOutputBinary</name>
@@ -61,16 +61,16 @@
                 <option>
                     <name>GRuntimeLibSelect</name>
                     <version>0</version>
-                    <state>4</state>
+                    <state>1</state>
                 </option>
                 <option>
                     <name>GRuntimeLibSelectSlave</name>
                     <version>0</version>
-                    <state>4</state>
+                    <state>1</state>
                 </option>
                 <option>
                     <name>RTDescription</name>
-                    <state>A complete C/C++17 runtime library. Full locale interface, C locale, file descriptor support, multibytes in printf and scanf, and hex floats in strtod.</state>
+                    <state>A compact configuration of the C/C++14 runtime library. No locale interface, C locale, no file descriptor support, no multibytes in printf and scanf, and no hex floats in strtod.</state>
                 </option>
                 <option>
                     <name>OGLastSavedByProductVersion</name>
@@ -98,7 +98,7 @@
                 </option>
                 <option>
                     <name>RTConfigPath2</name>
-                    <state></state>
+                    <state>$TOOLKIT_DIR$\inc\c\DLib_Config_Normal.h</state>
                 </option>
                 <option>
                     <name>GBECoreSlave</name>
@@ -159,16 +159,16 @@
                 <option>
                     <name>OGPrintfVariant</name>
                     <version>0</version>
-                    <state>0</state>
+                    <state>1</state>
                 </option>
                 <option>
                     <name>OGPrintfMultibyteSupport</name>
-                    <state>1</state>
+                    <state>0</state>
                 </option>
                 <option>
                     <name>OGScanfVariant</name>
                     <version>0</version>
-                    <state>0</state>
+                    <state>1</state>
                 </option>
                 <option>
                     <name>OGScanfMultibyteSupport</name>
@@ -226,9 +226,6 @@
                 </option>
                 <option>
                     <name>CCDefines</name>
-                    <state>ewarm</state>
-                    <state>PART_TM4C1294NCPDT</state>
-                    <state>TARGET_IS_TM4C129_RA1</state>
                     <state>TX_ENABLE_IAR_LIBRARY_SUPPORT</state>
                 </option>
                 <option>
@@ -351,8 +348,11 @@
                 <option>
                     <name>CCIncludePath2</name>
                     <state>$PROJ_DIR$\..\..\ThreadX\common\inc</state>
-                    <state>$PROJ_DIR$\..\..\ThreadX\ports\cortex_m4\iar</state>
+                    <state>$PROJ_DIR$\..\..\ThreadX\ports\cortex_m4\iar\inc</state>
+                    <state>$PROJ_DIR$\..</state>
                     <state>$PROJ_DIR$\..\..\TivaWare_C_Series-2.2.0.295</state>
+                    <state>$PROJ_DIR$\..\inc</state>
+                    <state>$PROJ_DIR$\..\..\..\..\common\inc</state>
                 </option>
                 <option>
                     <name>CCStdIncCheck</name>
@@ -373,7 +373,7 @@
                 <option>
                     <name>CCOptStrategy</name>
                     <version>0</version>
-                    <state>1</state>
+                    <state>0</state>
                 </option>
                 <option>
                     <name>CCOptLevelSlave</name>
@@ -426,7 +426,7 @@
                 <option>
                     <name>CCOptStrategySlave</name>
                     <version>0</version>
-                    <state>1</state>
+                    <state>0</state>
                 </option>
                 <option>
                     <name>CCGuardCalls</name>
@@ -650,7 +650,7 @@
                 </option>
                 <option>
                     <name>OOCOutputFile</name>
-                    <state>Projeto_Final.srec</state>
+                    <state>Lab5.srec</state>
                 </option>
                 <option>
                     <name>OOCCommandLineProducer</name>
@@ -668,7 +668,7 @@
             <data>
                 <extensions></extensions>
                 <cmdline></cmdline>
-                <hasPrio>1</hasPrio>
+                <hasPrio>0</hasPrio>
                 <buildSequence>inputOutputBased</buildSequence>
             </data>
         </settings>
@@ -809,9 +809,8 @@
                 </option>
                 <option>
                     <name>IlinkAdditionalLibs</name>
-                    <state>$PROJ_DIR$\..\..\TivaWare_C_Series-2.2.0.295\driverlib\ewarm\Exe\driverlib.a</state>
-                    <state>$PROJ_DIR$\..\..\TivaWare_C_Series-2.2.0.295\grlib\ewarm\Exe\grlib.a</state>
-                    <state>$PROJ_DIR$\..\..\ThreadX\ports\cortex_m4\iar\example_build\Debug\Exe\tx.a</state>
+                    <state>C:\Users\lucas\Documents\UTFPR\Semestre\Sistemas Embarcados\LucasLeyser\TivaWare_C_Series-2.2.0.295\driverlib\ewarm\Exe\driverlib.a</state>
+                    <state>C:\Users\lucas\Documents\UTFPR\Semestre\Sistemas Embarcados\LucasLeyser\ThreadX\ports\cortex_m4\iar\example_build\Debug\Exe\tx.a</state>
                 </option>
                 <option>
                     <name>IlinkOverrideProgramEntryLabel</name>
@@ -996,7 +995,7 @@
                 </option>
                 <option>
                     <name>IlinkTrustzoneImportLibraryOut</name>
-                    <state>Projeto_Final_import_lib.o</state>
+                    <state>Lab5_import_lib.o</state>
                 </option>
                 <option>
                     <name>OILinkExtraOption</name>
@@ -2159,27 +2158,12 @@
         </settings>
     </configuration>
     <file>
-        <name>$PROJ_DIR$\src\cfaf128x128x16.c</name>
+        <name>$PROJ_DIR$\sample_threadx.c</name>
     </file>
     <file>
-        <name>$PROJ_DIR$\src\joystick.cpp</name>
+        <name>$PROJ_DIR$\startup_ewarm.c</name>
     </file>
     <file>
-        <name>$PROJ_DIR$\src\lcd.cpp</name>
-    </file>
-    <file>
-        <name>$PROJ_DIR$\src\main.cpp</name>
-    </file>
-    <file>
-        <name>$PROJ_DIR$\src\pause_button.cpp</name>
-    </file>
-    <file>
-        <name>$PROJ_DIR$\src\sistick.cpp</name>
-    </file>
-    <file>
-        <name>$PROJ_DIR$\src\startup_ewarm.c</name>
-    </file>
-    <file>
-        <name>$PROJ_DIR$\src\tx_initialize_low_level.s</name>
+        <name>$PROJ_DIR$\tx_initialize_low_level.s</name>
     </file>
 </project>

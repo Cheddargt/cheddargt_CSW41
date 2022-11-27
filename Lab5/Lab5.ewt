@@ -2846,27 +2846,12 @@
         </settings>
     </configuration>
     <file>
-        <name>$PROJ_DIR$\src\cfaf128x128x16.c</name>
+        <name>$PROJ_DIR$\sample_threadx.c</name>
     </file>
     <file>
-        <name>$PROJ_DIR$\src\joystick.cpp</name>
+        <name>$PROJ_DIR$\startup_ewarm.c</name>
     </file>
     <file>
-        <name>$PROJ_DIR$\src\lcd.cpp</name>
-    </file>
-    <file>
-        <name>$PROJ_DIR$\src\main.cpp</name>
-    </file>
-    <file>
-        <name>$PROJ_DIR$\src\pause_button.cpp</name>
-    </file>
-    <file>
-        <name>$PROJ_DIR$\src\sistick.cpp</name>
-    </file>
-    <file>
-        <name>$PROJ_DIR$\src\startup_ewarm.c</name>
-    </file>
-    <file>
-        <name>$PROJ_DIR$\src\tx_initialize_low_level.s</name>
+        <name>$PROJ_DIR$\tx_initialize_low_level.s</name>
     </file>
 </project>

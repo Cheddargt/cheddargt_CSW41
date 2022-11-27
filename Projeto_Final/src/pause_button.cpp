@@ -33,6 +33,4 @@ extern void pause_IntHandler(void)
       pause = false;
     else
       pause = true;
-    
-    //Parar os dois timers
 }

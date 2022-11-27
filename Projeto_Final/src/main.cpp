@@ -38,6 +38,7 @@ extern void updateJOY(void);
 extern void initPAUSE(void);
 extern void initSysTick(void);
 extern void initLCD(void); 
+extern void initBackground(void);
 void thread_game_entry(ULONG thread_input);
 void thread_joy_entry(ULONG thread_input);
 void thread_lcd_entry(ULONG thread_input);
@@ -56,7 +57,7 @@ int main(int argc, char ** argv)
 
 void tx_application_define(void *first_unused_memory)
 {
-    void    *pointer = TX_NULL;
+    char    *pointer = (char*) TX_NULL;
     
     /* Create a byte memory pool from which to allocate the thread stacks.  */
     tx_byte_pool_create(&byte_pool_0, "byte pool 0", byte_pool_memory, DEMO_BYTE_POOL_SIZE);
@@ -67,18 +68,18 @@ void tx_application_define(void *first_unused_memory)
     /* Create the main thread.  */
     tx_thread_create(&thread_game, "thread game", thread_game_entry, 0,  
             pointer, DEMO_STACK_SIZE, 
-            2, 2, TX_NO_TIME_SLICE, TX_AUTO_START);
+            3, 3, TX_NO_TIME_SLICE, TX_AUTO_START);
             
     
     tx_byte_allocate(&byte_pool_0, (VOID **) &pointer, DEMO_STACK_SIZE, TX_NO_WAIT);
     tx_thread_create(&thread_joy, "thread joy", thread_joy_entry, 1,  
             pointer, DEMO_STACK_SIZE, 
-            3, 3, TX_NO_TIME_SLICE, TX_AUTO_START);
+            4, 4, TX_NO_TIME_SLICE, TX_AUTO_START);
             
     tx_byte_allocate(&byte_pool_0, (VOID **) &pointer, DEMO_STACK_SIZE, TX_NO_WAIT);
     tx_thread_create(&thread_lcd, "thread lcd", thread_lcd_entry, 1,  
             pointer, DEMO_STACK_SIZE, 
-            1, 1, TX_NO_TIME_SLICE, TX_AUTO_START);
+            2, 2, TX_NO_TIME_SLICE, TX_AUTO_START);
             
     /* Create the event flags group used by threads 0 and 1.  */
     tx_event_flags_create(&flag_joy, "flag joy");
@@ -100,33 +101,41 @@ void thread_game_entry(ULONG thread_input)
 {
     initPAUSE();
     IntMasterEnable(); 
-    
-    while (!pause)
+    while(1)
     {
-        
+        while (!pause)
+        {
+            tx_thread_sleep(100);
+        }
     }
 }
 
 void thread_joy_entry(ULONG thread_input)
 {
     initJOY();
-    
-    while (!pause)
+    while(1)
     {
-        
-        updateJOY();
-        
-        tx_thread_sleep(10);
+        while (!pause)
+        {
+            
+            updateJOY();
+            
+            tx_thread_sleep(100);
+        }
     }
 }
-
+int i = 0;
 void thread_lcd_entry(ULONG thread_input)
 {
     initLCD();
-    
-    while (!pause)
+    while(1)
     {
-        tx_thread_sleep(10);
+        while (!pause)
+        {
+          i++;  
+          initBackground();
+          tx_thread_sleep(100);
+        }
     }
 }
 

@@ -75,5 +75,4 @@ void initLCD(void)
     GrContextInit(&sContext, &g_sCfaf128x128x16);
     
     initTela();
-    initBackground();
 }

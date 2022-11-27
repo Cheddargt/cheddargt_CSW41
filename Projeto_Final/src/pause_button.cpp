@@ -24,7 +24,7 @@ void initPAUSE(void)
     GPIOIntEnable(GPIO_PORTL_BASE, GPIO_INT_PIN_1);
     GPIOIntTypeSet(GPIO_PORTL_BASE, GPIO_PIN_1, GPIO_LOW_LEVEL);
     IntEnable(INT_GPIOL_TM4C129);
-    IntPrioritySet(INT_GPIOL_TM4C129, 0x01);    //Mais importante por parar o jogo
+    IntPrioritySet(INT_GPIOL_TM4C129, 0x00);    //Mais importante por parar o jogo
 }
 
 extern void pause_IntHandler(void)

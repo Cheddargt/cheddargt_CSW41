@@ -22,4 +22,6 @@ int snake_size (Node* node);
 
 Node* snake_search (Node* node , int x, int y);
 
+Node* snake_update (Node* node , int dir);
+
 #endif

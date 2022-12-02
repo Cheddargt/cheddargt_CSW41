@@ -12,16 +12,16 @@ typedef struct Node {
 
 Node* snake_create (void);
 
-Node* snake_add (Node* node, int x, int y);
+Node* snake_add (Node* head, int x, int y);
 
-void snake_print (Node* node);
+void snake_print (Node* head);
 
-void snake_free (Node* node);
+void snake_free (Node* head);
 
-int snake_size (Node* node);
+int snake_size (Node* head);
 
-Node* snake_search (Node* node , int x, int y);
+Node* snake_search (Node* head, int x, int y);
 
-Node* snake_update (Node* node , int dir);
+Node* snake_update (Node* head, int dir);
 
 #endif

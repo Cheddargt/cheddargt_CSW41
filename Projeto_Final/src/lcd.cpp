@@ -8,6 +8,12 @@
 #include "driverlib/sysctl.h"
 #include "cfaf128x128x16.h"
 
+#define WALL_COLOR 0x00000000
+#define TEXT_COLOR 0x00008000
+#define SNAKE_COLOR 0x00006400
+#define FOOD_COLOR 0x00FF0000
+#define BACKGROUND_COLOR 0x00FFFAF0
+
 tContext sContext;
 
 void initTela(void)
@@ -16,8 +22,8 @@ void initTela(void)
         
     GrContextFontSet(&sContext, g_psFontFixed6x8);
 
-    GrContextForegroundSet(&sContext, ClrGreen);
-    GrContextBackgroundSet(&sContext, ClrBlack);
+    GrContextForegroundSet(&sContext, TEXT_COLOR);
+    GrContextBackgroundSet(&sContext, WALL_COLOR);
 
 
     GrStringDraw(&sContext,"EMBEDDED SNAKE", -1, 0, (sContext.psFont->ui8Height+2)*0, false);
@@ -31,7 +37,7 @@ void initBackground(void)
     tRectangle paredeE, paredeD, paredeC, paredeB, backgound;
     
     GrFlush(&sContext);
-    GrContextForegroundSet(&sContext, ClrBlack);
+    GrContextForegroundSet(&sContext, WALL_COLOR);
     
     paredeE.i16XMin = 0;
     paredeE.i16YMin = 0;
@@ -64,7 +70,7 @@ void initBackground(void)
     GrRectFill(&sContext, &paredeB);
     
     GrFlush(&sContext);    
-    GrContextForegroundSet(&sContext, grayColor);
+    GrContextForegroundSet(&sContext, BACKGROUND_COLOR);
     GrRectFill(&sContext, &backgound);
 }
 
@@ -75,4 +81,28 @@ void initLCD(void)
     GrContextInit(&sContext, &g_sCfaf128x128x16);
     
     initTela();
+}
+
+// Marca uma nova posição da cobra ou a comida no LCD
+// Se flag == 0 -> Comida
+// Se flag == 1 -> Posição da Cobra
+// Se flag == 2 -> Posição do Background
+void new_print(uint32_t x, uint32_t y, uint32_t flag)
+{
+    tRectangle new_snake;
+    
+    GrFlush(&sContext);
+    if (flag == 0)
+        GrContextForegroundSet(&sContext, FOOD_COLOR);
+    else if (flag == 1)
+        GrContextForegroundSet(&sContext, SNAKE_COLOR);
+    else
+        GrContextForegroundSet(&sContext, BACKGROUND_COLOR);
+    
+    new_snake.i16XMin = 8*x;
+    new_snake.i16YMin = 8*y;
+    new_snake.i16XMax = (8*(x+1)) - 1;
+    new_snake.i16YMax = (8*(y+1)) - 1;
+    
+    GrRectFill(&sContext, &new_snake);    
 }

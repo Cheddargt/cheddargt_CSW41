@@ -10,18 +10,20 @@ typedef struct Node {
   struct Node* next;
 } Node;
 
-Node* snake_create (void);
+Node* snake_create(void);
 
-Node* snake_add (Node* head, int x, int y);
+Node* snake_add(Node* head, int x, int y);
 
-void snake_print (Node* head);
+void snake_print(Node* head);
 
-void snake_free (Node* head);
+void snake_free(Node* head);
 
-int snake_size (Node* head);
+int snake_size(Node* head);
 
-Node* snake_search (Node* head, int x, int y);
+Node* snake_search(Node* head, int x, int y);
 
-Node* snake_update (Node* head, int dir);
+void snake_update(Node* head, int dir);
+
+Node* new_food(Node* head);
 
 #endif

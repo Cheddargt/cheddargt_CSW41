@@ -2177,6 +2177,9 @@
         <name>$PROJ_DIR$\src\sistick.cpp</name>
     </file>
     <file>
+        <name>$PROJ_DIR$\src\snake_list.c</name>
+    </file>
+    <file>
         <name>$PROJ_DIR$\src\startup_ewarm.c</name>
     </file>
     <file>

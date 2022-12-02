@@ -7,13 +7,13 @@ Node* snake_create (void)
 }
 
 /* Adiciona uma nova posição na cobra, sempre adiciona e retorna a cabeça*/
-Node* snake_add (Node* head, int x, int y);
+Node* snake_add (Node* head, int x, int y)
 {
-   Node* new =(Node*)malloc(sizeof(Node));
-   new->x = x;
-   new->y = y;
-   new->next = head;
-   return new;
+   Node* new_node =(Node*)malloc(sizeof(Node));
+   new_node->x = x;
+   new_node->y = y;
+   new_node->next = head;
+   return new_node;
 }
 
 
@@ -56,4 +56,45 @@ Node* snake_search (Node* head , int x, int y)
         }
     }
     return NULL;
+}
+
+void snake_update (Node* head , int direction)
+{
+    Node* i;
+    for (i = head; i != NULL; i = i->next)
+    {
+        switch (direction)
+        {
+            case 1:
+                (i->x)++;
+                break;
+            case 2:
+                (i->x)--;
+                break;
+            case 3:
+                (i->y)--;
+                break;
+            case 4:
+                (i->y)++;
+                break;
+        }
+    }
+}
+
+Node* new_food(Node* head)
+{
+    Node *food =(Node*)malloc(sizeof(Node));
+    int good_food = 0;
+    
+    while (!good_food)
+    {
+        (food->x) = rand() % 15 + 1;
+        (food->y) = rand() % 15 + 1;
+        
+        struct Node *colision = snake_search(head , food->x, food->y);
+        if (colision == NULL)
+            good_food = 1;
+    }
+    food->next = NULL;
+    return food;
 }

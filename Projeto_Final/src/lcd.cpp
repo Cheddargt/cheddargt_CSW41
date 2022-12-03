@@ -139,7 +139,6 @@ void new_print(uint32_t x, uint32_t y, uint32_t flag)
 
 void print_pause(bool pause)
 {
-    tContext sContext;
     tRectangle pause_ret;
     
     GrFlush(&sContext);
@@ -148,14 +147,14 @@ void print_pause(bool pause)
     {       
         GrContextForegroundSet(&sContext, 0x00000000);
         
-        pause_ret.i16XMin = 121;
+        pause_ret.i16XMin = 120;
         pause_ret.i16YMin = 1;
-        pause_ret.i16XMax = 124;
+        pause_ret.i16XMax = 122;
         pause_ret.i16YMax = 6;
         GrRectFill(&sContext, &pause_ret);
         
-        pause_ret.i16XMin = 125;
-        pause_ret.i16XMax = 127;
+        pause_ret.i16XMin = 124;
+        pause_ret.i16XMax = 126;
         GrRectFill(&sContext, &pause_ret);
       
     }
@@ -163,9 +162,9 @@ void print_pause(bool pause)
     {
         GrContextForegroundSet(&sContext, 0x00808080);
         
-        pause_ret.i16XMin = 121;
+        pause_ret.i16XMin = 120;
         pause_ret.i16YMin = 1;
-        pause_ret.i16XMax = 127;
+        pause_ret.i16XMax = 126;
         pause_ret.i16YMax = 6;
         GrRectFill(&sContext, &pause_ret);
     }

@@ -72,7 +72,7 @@ int main(int argc, char ** argv)
                                         SYSCTL_OSC_MAIN |
                                         SYSCTL_USE_PLL |
                                         SYSCTL_CFG_VCO_240), 120000000);
-    tx_kernel_enter();  
+    tx_kernel_enter(); 
 }   
 
 void tx_application_define(void *first_unused_memory)
@@ -96,7 +96,7 @@ void tx_application_define(void *first_unused_memory)
             
     tx_byte_allocate(&byte_pool_0, (VOID **) &pointer, DEMO_STACK_SIZE, TX_NO_WAIT);
     tx_thread_create(&thread_pause, "thread pause", thread_pause_entry, 0, pointer, DEMO_STACK_SIZE, 
-                        1, 1, TX_NO_TIME_SLICE, TX_AUTO_START);
+                        1, 1, TX_NO_TIME_SLICE, TX_DONT_START);
             
     tx_byte_allocate(&byte_pool_0, (VOID **) &pointer, DEMO_QUEUE_SIZE*sizeof(ULONG), TX_NO_WAIT);
     tx_queue_create(&joy_updated, "joy update", TX_1_ULONG, pointer, DEMO_QUEUE_SIZE*sizeof(ULONG));
@@ -245,6 +245,7 @@ void thread_lcd_entry(ULONG thread_input)
     UINT status;
     ULONG update = 0;
     initLCD();
+    tx_thread_resume(&thread_pause);
     while(1)
     {
         while (!pause)
@@ -288,10 +289,7 @@ void thread_pause_entry(ULONG thread_input)
     while(1)
     {
         status = tx_event_flags_get(&pause_flag, 0x1, TX_OR_CLEAR, &flag, TX_WAIT_FOREVER);
-        
-        if ((status != TX_SUCCESS) || (flag != 0x1))
-            break;
-        
+                
         if (pause_state)
             pause_state = false;
         else

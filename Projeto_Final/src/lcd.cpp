@@ -8,6 +8,9 @@
 #include "driverlib/sysctl.h"
 #include "cfaf128x128x16.h"
 
+#include <iostream>
+using namespace std;
+
 #define WALL_COLOR              0x00808080
 #define TEXT_COLOR              0x00008000
 #define SNAKE_INNER_COLOR       0x00008000
@@ -132,4 +135,95 @@ void new_print(uint32_t x, uint32_t y, uint32_t flag)
     //new_print.i16YMax--;        // = (POSITION_SIZE*(y+1)) - 1;
     
     GrRectFill(&sContext, &new_print);     
+}
+
+void print_pause(bool pause)
+{
+    tContext sContext;
+    tRectangle pause_ret;
+    
+    GrFlush(&sContext);
+    
+    if (pause)
+    {       
+        GrContextForegroundSet(&sContext, 0x00000000);
+        
+        pause_ret.i16XMin = 121;
+        pause_ret.i16YMin = 1;
+        pause_ret.i16XMax = 124;
+        pause_ret.i16YMax = 6;
+        GrRectFill(&sContext, &pause_ret);
+        
+        pause_ret.i16XMin = 125;
+        pause_ret.i16XMax = 127;
+        GrRectFill(&sContext, &pause_ret);
+      
+    }
+    else
+    {
+        GrContextForegroundSet(&sContext, 0x00808080);
+        
+        pause_ret.i16XMin = 121;
+        pause_ret.i16YMin = 1;
+        pause_ret.i16XMax = 127;
+        pause_ret.i16YMax = 6;
+        GrRectFill(&sContext, &pause_ret);
+    }
+}
+
+void game_over(int size)
+{
+    tRectangle background;
+    char number_array[3 + sizeof(char)];
+    sprintf(number_array, "%d", size);
+    
+    background.i16XMin = 0;
+    background.i16YMin = 0;
+    background.i16XMax = 127;
+    background.i16YMax = 127;
+    
+    GrFlush(&sContext);
+    
+    GrContextForegroundSet(&sContext, 0x00000000);    
+    GrRectFill(&sContext, &background);
+    
+    GrFlush(&sContext);
+    GrContextFontSet(&sContext, g_psFontFixed6x8);
+
+    GrContextForegroundSet(&sContext, TEXT_COLOR);
+    GrContextBackgroundSet(&sContext, WALL_COLOR);
+
+
+    GrStringDraw(&sContext,"EMBEDDED SNAKE", -1, 0, (sContext.psFont->ui8Height+2)*0, false);
+    GrStringDraw(&sContext,"---------------------", -1, 0, (sContext.psFont->ui8Height+2)*1, false);
+    GrStringDraw(&sContext,"GAME OVER", -1, 0, (sContext.psFont->ui8Height+2)*2, false);
+    GrStringDraw(&sContext,"SIZE:", -1, 0, (sContext.psFont->ui8Height+2)*3, false);
+    GrStringDraw(&sContext, number_array, -1, 0, (sContext.psFont->ui8Height+2)*4, false);
+}
+
+void you_win(void)
+{
+    tRectangle background;
+    
+    background.i16XMin = 0;
+    background.i16YMin = 0;
+    background.i16XMax = 127;
+    background.i16YMax = 127;
+    
+    GrFlush(&sContext);
+    
+    GrContextForegroundSet(&sContext, 0x00000000);    
+    GrRectFill(&sContext, &background);
+    
+    GrFlush(&sContext);
+    GrContextFontSet(&sContext, g_psFontFixed6x8);
+
+    GrContextForegroundSet(&sContext, TEXT_COLOR);
+    GrContextBackgroundSet(&sContext, WALL_COLOR);
+
+
+    GrStringDraw(&sContext,"EMBEDDED SNAKE", -1, 0, (sContext.psFont->ui8Height+2)*0, false);
+    GrStringDraw(&sContext,"---------------------", -1, 0, (sContext.psFont->ui8Height+2)*1, false);
+    GrStringDraw(&sContext,"YOU WIN", -1, 0, (sContext.psFont->ui8Height+2)*2, false);
+    GrStringDraw(&sContext,"MAX SIZE: 196", -1, 0, (sContext.psFont->ui8Height+2)*3, false);
 }

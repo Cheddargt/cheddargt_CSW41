@@ -29,4 +29,6 @@ Node* new_food(Node* head);
 
 int snake_ate(Node* head, Node* food, int direction);
 
+int snake_collision(Node *head);
+
 #endif

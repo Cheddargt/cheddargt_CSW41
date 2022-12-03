@@ -6,9 +6,14 @@
 #include "driverlib/sysctl.h"
 #include "driverlib/pin_map.h"
 #include "driverlib/interrupt.h"
+#include "grlib/grlib.h"
+#include "cfaf128x128x16.h"
+#include "tx_api.h"
 
 bool pause = false;
+extern TX_EVENT_FLAGS_GROUP pause_flag;
 extern void pause_IntHandler(void);
+extern void print_pause(bool pause);
 
 void initPAUSE(void)
 {
@@ -28,9 +33,13 @@ void initPAUSE(void)
 }
 
 extern void pause_IntHandler(void)
-{   
+{      
+    int status;
+    
     if (pause)
-      pause = false;
+        pause = false;
     else
-      pause = true;
+        pause = true;
+    
+    status = tx_event_flags_set(&pause_flag, 0x1, TX_OR);
 }

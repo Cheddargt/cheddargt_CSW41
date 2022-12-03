@@ -137,3 +137,13 @@ int snake_ate(Node* head, Node* food, int direction)
     else 
         return 0;
 }
+
+int snake_collision(Node *head)
+{
+    Node *collision = snake_search(head->next, head->x, head->y);
+    
+    if (collision != NULL)  // Colisão com o corpo
+        return 1;
+    else
+        return 0;   // Sem Colisão
+}

@@ -29,10 +29,12 @@
 TX_THREAD               thread_game;
 TX_THREAD               thread_joy;
 TX_THREAD               thread_lcd;
+TX_THREAD               thread_pause;
 TX_QUEUE                joy_updated;
 TX_QUEUE                update_lcd;
 TX_BYTE_POOL            byte_pool_0;
 TX_BLOCK_POOL           block_pool_0;
+TX_EVENT_FLAGS_GROUP    pause_flag;
 UCHAR                   byte_pool_memory[DEMO_BYTE_POOL_SIZE];
 
 UINT ui32SysClock; //Clock em Hz
@@ -55,6 +57,12 @@ extern void new_print(UINT x, UINT y, UINT flag);
 void thread_game_entry(ULONG thread_input);
 void thread_joy_entry(ULONG thread_input);
 void thread_lcd_entry(ULONG thread_input);
+void thread_pause_entry(ULONG thread_input);
+extern void pause_IntHandler(void);
+extern void print_pause(bool flag);
+extern void game_over(int size);
+extern void you_win(void);
+extern int snake_collision(Node *head);
 
 // Main function.
 
@@ -76,19 +84,20 @@ void tx_application_define(void *first_unused_memory)
     tx_byte_pool_create(&byte_pool_0, "byte pool 0", byte_pool_memory, DEMO_BYTE_POOL_SIZE);
     
     tx_byte_allocate(&byte_pool_0, (VOID **) &pointer, DEMO_STACK_SIZE, TX_NO_WAIT);
-        tx_thread_create(&thread_game, "thread game", thread_game_entry, 0,  
-            pointer, DEMO_STACK_SIZE, 
-            3, 3, TX_NO_TIME_SLICE, TX_AUTO_START);
+    tx_thread_create(&thread_game, "thread game", thread_game_entry, 1, pointer, DEMO_STACK_SIZE, 
+                        3, 3, TX_NO_TIME_SLICE, TX_AUTO_START);
     
     tx_byte_allocate(&byte_pool_0, (VOID **) &pointer, DEMO_STACK_SIZE, TX_NO_WAIT);
-    tx_thread_create(&thread_joy, "thread joy", thread_joy_entry, 1,  
-            pointer, DEMO_STACK_SIZE, 
-            4, 4, TX_NO_TIME_SLICE, TX_AUTO_START);
+    tx_thread_create(&thread_joy, "thread joy", thread_joy_entry, 2, pointer, DEMO_STACK_SIZE, 
+                        4, 4, TX_NO_TIME_SLICE, TX_AUTO_START);
             
     tx_byte_allocate(&byte_pool_0, (VOID **) &pointer, DEMO_STACK_SIZE, TX_NO_WAIT);
-    tx_thread_create(&thread_lcd, "thread lcd", thread_lcd_entry, 1,  
-            pointer, DEMO_STACK_SIZE, 
-            2, 2, TX_NO_TIME_SLICE, TX_AUTO_START);
+    tx_thread_create(&thread_lcd, "thread lcd", thread_lcd_entry, 2, pointer, DEMO_STACK_SIZE, 
+                        2, 2, TX_NO_TIME_SLICE, TX_AUTO_START);
+            
+    tx_byte_allocate(&byte_pool_0, (VOID **) &pointer, DEMO_STACK_SIZE, TX_NO_WAIT);
+    tx_thread_create(&thread_pause, "thread pause", thread_pause_entry, 0, pointer, DEMO_STACK_SIZE, 
+                        2, 2, TX_NO_TIME_SLICE, TX_AUTO_START);
             
     tx_byte_allocate(&byte_pool_0, (VOID **) &pointer, DEMO_QUEUE_SIZE*sizeof(ULONG), TX_NO_WAIT);
     tx_queue_create(&joy_updated, "joy update", TX_1_ULONG, pointer, DEMO_QUEUE_SIZE*sizeof(ULONG));
@@ -101,7 +110,9 @@ void tx_application_define(void *first_unused_memory)
     
     /* Create a block memory pool to allocate a message buffer from.  */
     tx_block_pool_create(&block_pool_0, "block pool 0", sizeof(ULONG), pointer, DEMO_BLOCK_POOL_SIZE);
-
+    
+    tx_event_flags_create(&pause_flag, "flag pause");
+    
     /* Allocate a block and release the block memory.  */
     tx_block_allocate(&block_pool_0, (VOID **) &pointer, TX_NO_WAIT);
 
@@ -115,9 +126,8 @@ void thread_game_entry(ULONG thread_input)
     UINT flag = 0;  // Flag = 0 -> Primeira iteração, apenas desenha a cobra
                     // Flag = 1 -> Atualiza a Cobra - NÃO COMEU
                     // Flag = 2 -> Atualiza a Cobra - COMEU
-    
-    initPAUSE();
-    IntMasterEnable(); 
+    UINT size_snake = 195; // Tamanho Inicial
+    UINT update = 1;
     
     head = snake_create();
     head = snake_add(head, 3, 8, 1);
@@ -146,12 +156,14 @@ void thread_game_entry(ULONG thread_input)
                 if (snake_speed < MAX_SPEED)
                     snake_speed = snake_speed * (float)1.05;
                 food = new_food(head);
+                size_snake++;
+                if (size_snake == 196)
+                {
+                    you_win();
+                    pause = 1; 
+                    update = 0;
+                }
                 flag = 2;   // COMEU
-            }
-            else if (((head->x) == 0) || ((head->x) == 15) || ((head->y) == 0) || ((head->y) == 15)) //Colisão com uma das paredes
-            {
-                //game_over();
-                //pause = 1;
             }
             else 
             {
@@ -159,7 +171,16 @@ void thread_game_entry(ULONG thread_input)
                 tail_y = tail->y;
                 snake_update(head, direction);
             }
-            status = tx_queue_send(&update_lcd, &flag, TX_WAIT_FOREVER);
+            
+            if ((((head->x) == 0) || ((head->x) == 15) || ((head->y) == 0) || ((head->y) == 15)) || (snake_collision(head))) //Colisão com as paredesou com o corpo
+            {
+                game_over(snake_size(head));
+                pause = 1;
+                update = 0;
+            }
+            
+            if (update)
+                status = tx_queue_send(&update_lcd, &flag, TX_WAIT_FOREVER);
             
             UINT sleep = (UINT)(1000/snake_speed);
             tx_thread_sleep(sleep);
@@ -211,7 +232,7 @@ void thread_joy_entry(ULONG thread_input)
                 direction = new_direction;
             }
            
-            tx_thread_sleep(10);
+            tx_thread_sleep(50);
         }
     }
 }
@@ -251,6 +272,31 @@ void thread_lcd_entry(ULONG thread_input)
                 new_print(head->x, head->y, COBRA);
             } 
         }
+    }
+}
+
+void thread_pause_entry(ULONG thread_input)
+{   
+    UINT status;
+    ULONG flag = 0;
+    bool pause_state = false;
+    
+    initPAUSE();
+    IntMasterEnable(); 
+    
+    while(1)
+    {
+        status = tx_event_flags_get(&pause_flag, 0x1, TX_OR_CLEAR, &flag, TX_WAIT_FOREVER);
+        
+        if ((status != TX_SUCCESS) || (flag != 0x1))
+            break;
+        
+        if (pause_state)
+            pause_state = false;
+        else
+            pause_state = true;
+        
+        print_pause(pause_state);
     }
 }
 

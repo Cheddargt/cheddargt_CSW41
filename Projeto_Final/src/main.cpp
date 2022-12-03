@@ -10,10 +10,12 @@
 */
 
 #include <stdint.h>
+
 #include "tx_api.h"
 #include "snake_list.h"
 #include "driverlib/interrupt.h"
 #include "driverlib/sysctl.h"
+
 
 #define DEMO_STACK_SIZE         1024
 #define DEMO_BYTE_POOL_SIZE     9120
@@ -39,7 +41,8 @@ extern UINT joy_X;
 extern UINT joy_Y;
 
 struct Node *head, *tail, *food;
-int snake_speed = 1;       //Inicia em uma posição/segundo
+UINT snake_speed = 1;           // Inicia em uma posição/segundo
+UINT tail_x, tail_y;    // Marca a posição da cauda da cobra
 
 extern void initJOY(void); 
 extern void updateJOY(void); 
@@ -107,46 +110,56 @@ void tx_application_define(void *first_unused_memory)
 
 void thread_game_entry(ULONG thread_input)
 {
-    UINT status, direction = 1;
+    UINT status, direction = 1; // Inicia movendo para a direita
+    UINT flag = 0;  // Flag = 0 -> Primeira iteração, apenas desenha a cobra
+                    // Flag = 1 -> Atualiza a Cobra - NÃO COMEU
+                    // Flag = 2 -> Atualiza a Cobra - COMEU
     
     initPAUSE();
     IntMasterEnable(); 
     
     head = snake_create();
-    head = snake_add(head, 3, 8);
+    head = snake_add(head, 3, 8, 1);
     tail = head;
-    head = snake_add(head, 4, 8);
-    head = snake_add(head, 5, 8);
-    head = snake_add(head, 6, 8);
-    head = snake_add(head, 7, 8);
+    tail_x = tail->x;
+    tail_y = tail->y;
+    head = snake_add(head, 4, 8, 1);
+    head = snake_add(head, 5, 8, 1);
+    head = snake_add(head, 6, 8, 1);
+    head = snake_add(head, 7, 8, 1);
     food = new_food(head);
     
-    status = tx_queue_send(&update_lcd, &direction, TX_WAIT_FOREVER);
+    status = tx_queue_send(&update_lcd, &flag, TX_WAIT_FOREVER);
     
     
     while(1)
     {
         while (!pause)
         {
+            flag = 1;   // Estado inicial = NÃO COMEU
             status = tx_queue_receive(&joy_updated, &direction, TX_NO_WAIT);
             
-            snake_update(head, direction);
-            
-            if  (((head->x) == (food->x)) && ((head->y) == (food->y))) //Comeu a comida
+            if  (snake_ate(head, food, direction)) //Comeu a comida
             {
-                snake_add(head, food->x, food->y);
-                snake_speed = snake_speed++;
+                head = snake_add(head, food->x, food->y, direction);
+                snake_speed++;
                 food = new_food(head);
+                flag = 2;   // COMEU
             }
             else if (((head->x) == 0) || ((head->x) == 15) || ((head->y) == 0) || ((head->y) == 15)) //Colisão com uma das paredes
             {
                 //game_over();
                 //pause = 1;
             }
-                
-            status = tx_queue_send(&update_lcd, &direction, TX_WAIT_FOREVER);
+            else 
+            {
+                tail_x = tail->x;
+                tail_y = tail->y;
+                snake_update(head, direction);
+            }
+            status = tx_queue_send(&update_lcd, &flag, TX_WAIT_FOREVER);
             
-            UINT sleep = (UINT)(1000*snake_speed);
+            UINT sleep = (UINT)(1000/snake_speed);
             tx_thread_sleep(sleep);
         }
     }
@@ -155,7 +168,7 @@ void thread_game_entry(ULONG thread_input)
 void thread_joy_entry(ULONG thread_input)
 {
     UINT status, dif_x = 0, dif_y = 0;
-    ULONG direction;
+    ULONG direction = 1, new_direction = 0;
     initJOY();
     while(1)
     {
@@ -174,44 +187,28 @@ void thread_joy_entry(ULONG thread_input)
             else
                 dif_y = CENTER_JOY - joy_Y;
             
-            if ((dif_x > dif_y) && (dif_x > (CENTER_JOY/4)))
+            // Confere se a mudança é relevante ou se não é uma direção oposta a anterior antes de enviar a nova direção lida
+            if ((dif_x > dif_y) && (dif_x > (CENTER_JOY/4)) && (direction != 1) && (direction != 2))
             {
-                if (joy_X > CENTER_JOY) // Direita
-                {
-                    if (direction != 1) // Outra Direção
-                    {
-                        direction = 1;
-                        status = tx_queue_send(&joy_updated, &direction, TX_WAIT_FOREVER);
-                    }
-                }
-                else // Esquerda
-                {
-                    if (direction != 2) // Outra Direção
-                    {
-                        direction = 2;
-                        status = tx_queue_send(&joy_updated, &direction, TX_WAIT_FOREVER);
-                    }
-                }
+                if (joy_X > CENTER_JOY)         // Direita
+                    new_direction = 1;
+                else if (joy_X < CENTER_JOY)    // Esquerda
+                    new_direction = 2;
+                
+                status = tx_queue_send(&joy_updated, &new_direction, TX_WAIT_FOREVER);
+                direction = new_direction;
             }
-            else if ((dif_y > dif_x) && (dif_y > (CENTER_JOY/4)))
+            else if ((dif_y > dif_x) && (dif_y > (CENTER_JOY/4)) && (direction != 3) && (direction != 4))
             {
-                if (joy_Y > CENTER_JOY) // Cima
-                {
-                    if (direction != 3) // Outra Direção
-                    {
-                        direction = 3;
-                        status = tx_queue_send(&joy_updated, &direction, TX_WAIT_FOREVER);
-                    }
-                }
-                else // Baixo
-                {
-                    if (direction != 4) // Outra Direção
-                    {
-                        direction = 4;
-                        status = tx_queue_send(&joy_updated, &direction, TX_WAIT_FOREVER);
-                    }
-                }
+                if (joy_Y > CENTER_JOY)         // Cima
+                    new_direction = 3;
+                else if (joy_Y < CENTER_JOY)    // Baixo
+                    new_direction = 4;
+                
+                status = tx_queue_send(&joy_updated, &new_direction, TX_WAIT_FOREVER);
+                direction = new_direction;
             }
+           
             tx_thread_sleep(10);
         }
     }
@@ -220,7 +217,7 @@ void thread_joy_entry(ULONG thread_input)
 void thread_lcd_entry(ULONG thread_input)
 {
     UINT COMIDA = 0, COBRA = 1, BACKGROUND = 2;
-    UINT status, first = 1;
+    UINT status;
     ULONG update = 0;
     initLCD();
     while(1)
@@ -229,23 +226,28 @@ void thread_lcd_entry(ULONG thread_input)
         {
             status = tx_queue_receive(&update_lcd, &update, TX_WAIT_FOREVER);
             
-            if (first)
+            if (update == 0) // Primeira Iteração Apenas desenha a cobra e a comida
             {
+                initBackground();  
                 new_print(3, 8, COBRA);
                 new_print(4, 8, COBRA);
                 new_print(5, 8, COBRA);
                 new_print(6, 8, COBRA);
                 new_print(7, 8, COBRA);
                 new_print(food->x, food->y, COMIDA);
-                first = 0;
             }
             
-            if (update && (!first))
+            else if (update == 1)   // Atualiza a Cobra, NÃO COMEU
+            {
+                new_print(head->x, head->y, COBRA);
+                new_print(tail_x, tail_y, BACKGROUND);
+            }  
+            
+            else if (update == 2)   // Atualiza a Cobra, COMEU
             {
                 new_print(food->x, food->y, COMIDA);
                 new_print(head->x, head->y, COBRA);
-                new_print(tail->x, tail->y, BACKGROUND);
-            }          
+            } 
         }
     }
 }

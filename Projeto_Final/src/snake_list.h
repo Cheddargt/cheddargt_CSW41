@@ -7,12 +7,13 @@
 typedef struct Node {
   int x;
   int y;
+  int direction;    /* direction: 0 -> Centro ; 1 -> Direita ; 2 -> Esquerda ; 3 -> Cima ; 4 -> Baixo */
   struct Node* next;
 } Node;
 
 Node* snake_create(void);
 
-Node* snake_add(Node* head, int x, int y);
+Node* snake_add (Node* head, int x, int y, int direction);
 
 void snake_print(Node* head);
 
@@ -22,8 +23,10 @@ int snake_size(Node* head);
 
 Node* snake_search(Node* head, int x, int y);
 
-void snake_update(Node* head, int dir);
+void snake_update(Node* head, int direction);
 
 Node* new_food(Node* head);
+
+int snake_ate(Node* head, Node* food, int direction);
 
 #endif

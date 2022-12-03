@@ -1,4 +1,5 @@
 #include "snake_list.h"
+#include <time.h>  
 
 /* */
 Node* snake_create (void) 
@@ -7,11 +8,12 @@ Node* snake_create (void)
 }
 
 /* Adiciona uma nova posição na cobra, sempre adiciona e retorna a cabeça*/
-Node* snake_add (Node* head, int x, int y)
+Node* snake_add (Node* head, int x, int y, int direction)
 {
    Node* new_node =(Node*)malloc(sizeof(Node));
    new_node->x = x;
    new_node->y = y;
+   new_node->direction = direction;
    new_node->next = head;
    return new_node;
 }
@@ -58,12 +60,21 @@ Node* snake_search (Node* head , int x, int y)
     return NULL;
 }
 
-void snake_update (Node* head , int direction)
+void snake_update (Node* head, int direction)
 {
     Node* i;
+    int last_dir = head->direction, aux; // Salva a direção atual da cabeça
+    head->direction = direction;    // Atualiza a cabeça com a nova direção
+    
     for (i = head; i != NULL; i = i->next)
     {
-        switch (direction)
+        if (i != head)
+        {
+            aux = i->direction;
+            i->direction = last_dir;
+            last_dir = aux;
+        }
+        switch (i->direction)
         {
             case 1:
                 (i->x)++;
@@ -88,13 +99,41 @@ Node* new_food(Node* head)
     
     while (!good_food)
     {
-        (food->x) = rand() % 15 + 1;
-        (food->y) = rand() % 15 + 1;
+        srand(time(NULL));
+        (food->x) = rand() % 14 + 1;
+        (food->y) = rand() % 14 + 1;
         
         struct Node *colision = snake_search(head , food->x, food->y);
         if (colision == NULL)
             good_food = 1;
     }
+    food->direction = 0;
     food->next = NULL;
     return food;
+}
+
+int snake_ate(Node* head, Node* food, int direction)
+{
+    int x = head->x;
+    int y = head->y;
+    switch (direction)
+    {
+        case 1:
+            x++;
+            break;
+        case 2:
+            x--;
+            break;
+        case 3:
+            y--;
+            break;
+        case 4:
+            y++;
+            break;
+    }
+    
+    if  ((x == (food->x)) && (y == (food->y))) // Comeu a comida
+        return 1;
+    else 
+        return 0;
 }

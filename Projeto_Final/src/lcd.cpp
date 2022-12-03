@@ -126,10 +126,10 @@ void new_print(uint32_t x, uint32_t y, uint32_t flag)
     else
         GrContextForegroundSet(&sContext, BACKGROUND_INNER_COLOR);
     
-    new_print.i16XMin++;        // = POSITION_SIZE*x;
+    //new_print.i16XMin++;        // = POSITION_SIZE*x;
     new_print.i16YMin++;        // = POSITION_SIZE*y;
     new_print.i16XMax--;        // = (POSITION_SIZE*(x+1)) - 1;
-    new_print.i16YMax--;        // = (POSITION_SIZE*(y+1)) - 1;
+    //new_print.i16YMax--;        // = (POSITION_SIZE*(y+1)) - 1;
     
     GrRectFill(&sContext, &new_print);     
 }

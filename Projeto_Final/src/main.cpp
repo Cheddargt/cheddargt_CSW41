@@ -159,7 +159,13 @@ void thread_game_entry(ULONG thread_input)
                 if (size_snake == 196)
                 {
                     you_win();
-                    pause = 1; 
+                    //pause = 1;                   
+                    
+                    tx_thread_terminate(&thread_joy);
+                    tx_thread_terminate(&thread_lcd);
+                    tx_thread_terminate(&thread_pause);
+                    tx_thread_terminate(&thread_game);
+                    
                     update = 0;
                 }
                 flag = 2;   // COMEU
@@ -174,7 +180,13 @@ void thread_game_entry(ULONG thread_input)
             if ((((head->x) == 0) || ((head->x) == 15) || ((head->y) == 0) || ((head->y) == 15)) || (snake_collision(head))) //Colisão com as paredesou com o corpo
             {
                 game_over(snake_size(head));
-                pause = 1;
+                //pause = 1;
+                
+                tx_thread_terminate(&thread_joy);
+                tx_thread_terminate(&thread_lcd);
+                tx_thread_terminate(&thread_pause);
+                tx_thread_terminate(&thread_game);
+                    
                 update = 0;
             }
             

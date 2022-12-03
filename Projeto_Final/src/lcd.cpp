@@ -8,13 +8,22 @@
 #include "driverlib/sysctl.h"
 #include "cfaf128x128x16.h"
 
-#define WALL_COLOR 0x00000000
-#define TEXT_COLOR 0x00008000
-#define SNAKE_COLOR 0x00006400
-#define FOOD_COLOR 0x00FF0000
-#define BACKGROUND_COLOR 0x00FFFAF0
+#define WALL_COLOR              0x00808080
+#define TEXT_COLOR              0x00008000
+#define SNAKE_INNER_COLOR       0x00008000
+#define SNAKE_OUTER_COLOR       0x00006400
+#define FOOD_INNER_COLOR        0x00FF0000
+#define FOOD_OUTER_COLOR        0x008B0000
+#define BACKGROUND_INNER_COLOR  0x00FFFAF0
+#define BACKGROUND_OUTER_COLOR  0x00000000
+
+#define LCD_SIZE 128
+#define POSITION_SIZE 8         // Each position is POSITION_SIZE x POSITION_SIZE pixels
+
 
 tContext sContext;
+
+void new_print(uint32_t x, uint32_t y, uint32_t flag);
 
 void initTela(void)
 {
@@ -34,44 +43,45 @@ void initTela(void)
 
 void initBackground(void)
 {
-    tRectangle paredeE, paredeD, paredeC, paredeB, backgound;
+    tRectangle left_wall, right_wall, top_wall, bottom_wall;
+    int i, j;
     
     GrFlush(&sContext);
+    
+    // Criar as Paredes
     GrContextForegroundSet(&sContext, WALL_COLOR);
     
-    paredeE.i16XMin = 0;
-    paredeE.i16YMin = 0;
-    paredeE.i16XMax = 7;
-    paredeE.i16YMax = 127;
+    left_wall.i16XMin = 0;
+    left_wall.i16YMin = 0;
+    left_wall.i16XMax = POSITION_SIZE-1;
+    left_wall.i16YMax = LCD_SIZE - 1;
     
-    paredeD.i16XMin = 120;
-    paredeD.i16YMin = 0;
-    paredeD.i16XMax = 127;
-    paredeD.i16YMax = 127;
+    right_wall.i16XMin = LCD_SIZE - POSITION_SIZE;
+    right_wall.i16YMin = 0;
+    right_wall.i16XMax = LCD_SIZE - 1;
+    right_wall.i16YMax = LCD_SIZE - 1;
     
-    paredeB.i16XMin = 7;
-    paredeB.i16YMin = 120;
-    paredeB.i16XMax = 120;
-    paredeB.i16YMax = 127;
+    bottom_wall.i16XMin = POSITION_SIZE - 1;
+    bottom_wall.i16YMin = LCD_SIZE - POSITION_SIZE;
+    bottom_wall.i16XMax = LCD_SIZE - POSITION_SIZE;
+    bottom_wall.i16YMax = LCD_SIZE - 1;
     
-    paredeC.i16XMin = 7;
-    paredeC.i16YMin = 0;
-    paredeC.i16XMax = 120;
-    paredeC.i16YMax = 7;
-        
-    backgound.i16XMin = 8;
-    backgound.i16YMin = 8;
-    backgound.i16XMax = 120;
-    backgound.i16YMax = 120;
-    
-    GrRectFill(&sContext, &paredeE);
-    GrRectFill(&sContext, &paredeD);
-    GrRectFill(&sContext, &paredeC);
-    GrRectFill(&sContext, &paredeB);
-    
-    GrFlush(&sContext);    
-    GrContextForegroundSet(&sContext, BACKGROUND_COLOR);
-    GrRectFill(&sContext, &backgound);
+    top_wall.i16XMin = POSITION_SIZE - 1;
+    top_wall.i16YMin = 0;
+    top_wall.i16XMax = LCD_SIZE - POSITION_SIZE;
+    top_wall.i16YMax = POSITION_SIZE - 1;
+
+    GrRectFill(&sContext, &left_wall);
+    GrRectFill(&sContext, &right_wall);
+    GrRectFill(&sContext, &top_wall);
+    GrRectFill(&sContext, &bottom_wall);
+
+    // Criar o Background 
+    for(j = 1; j < (LCD_SIZE / POSITION_SIZE) - 1; j++)
+    {
+        for(i = 1; i < (LCD_SIZE / POSITION_SIZE) - 1; i++)
+            new_print(i, j, 2);
+    }
 }
 
 void initLCD(void)
@@ -89,20 +99,37 @@ void initLCD(void)
 // Se flag == 2 -> Posição do Background
 void new_print(uint32_t x, uint32_t y, uint32_t flag)
 {
-    tRectangle new_snake;
+    tRectangle new_print;
     
+    //Outer Colors
     GrFlush(&sContext);
     if (flag == 0)
-        GrContextForegroundSet(&sContext, FOOD_COLOR);
+        GrContextForegroundSet(&sContext, FOOD_OUTER_COLOR);
     else if (flag == 1)
-        GrContextForegroundSet(&sContext, SNAKE_COLOR);
+        GrContextForegroundSet(&sContext, SNAKE_OUTER_COLOR);
     else
-        GrContextForegroundSet(&sContext, BACKGROUND_COLOR);
+        GrContextForegroundSet(&sContext, BACKGROUND_OUTER_COLOR);
     
-    new_snake.i16XMin = 8*x;
-    new_snake.i16YMin = 8*y;
-    new_snake.i16XMax = (8*(x+1)) - 1;
-    new_snake.i16YMax = (8*(y+1)) - 1;
+    new_print.i16XMin = POSITION_SIZE*x;
+    new_print.i16YMin = POSITION_SIZE*y;
+    new_print.i16XMax = (POSITION_SIZE*(x+1)) - 1;
+    new_print.i16YMax = (POSITION_SIZE*(y+1)) - 1;
     
-    GrRectFill(&sContext, &new_snake);    
+    GrRectFill(&sContext, &new_print);  
+    
+    //Inner Colors
+    GrFlush(&sContext);
+    if (flag == 0)
+        GrContextForegroundSet(&sContext, FOOD_INNER_COLOR);
+    else if (flag == 1)
+        GrContextForegroundSet(&sContext, SNAKE_INNER_COLOR);
+    else
+        GrContextForegroundSet(&sContext, BACKGROUND_INNER_COLOR);
+    
+    new_print.i16XMin++;        // = POSITION_SIZE*x;
+    new_print.i16YMin++;        // = POSITION_SIZE*y;
+    new_print.i16XMax--;        // = (POSITION_SIZE*(x+1)) - 1;
+    new_print.i16YMax--;        // = (POSITION_SIZE*(y+1)) - 1;
+    
+    GrRectFill(&sContext, &new_print);     
 }

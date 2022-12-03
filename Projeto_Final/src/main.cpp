@@ -39,7 +39,7 @@ extern UINT joy_X;
 extern UINT joy_Y;
 
 struct Node *head, *tail, *food;
-double snake_speed = 1.0;       //Inicia em uma posição/segundo
+int snake_speed = 1;       //Inicia em uma posição/segundo
 
 extern void initJOY(void); 
 extern void updateJOY(void); 
@@ -135,7 +135,7 @@ void thread_game_entry(ULONG thread_input)
             if  (((head->x) == (food->x)) && ((head->y) == (food->y))) //Comeu a comida
             {
                 snake_add(head, food->x, food->y);
-                snake_speed = snake_speed * 1.05;
+                snake_speed = snake_speed++;
                 food = new_food(head);
             }
             else if (((head->x) == 0) || ((head->x) == 15) || ((head->y) == 0) || ((head->y) == 15)) //Colisão com uma das paredes

@@ -22,7 +22,8 @@
 #define DEMO_BLOCK_POOL_SIZE    100
 #define DEMO_QUEUE_SIZE         100
 
-#define CENTER_JOY 2000
+#define CENTER_JOY  2000
+#define MAX_SPEED   19
 
 
 TX_THREAD               thread_game;
@@ -41,7 +42,7 @@ extern UINT joy_X;
 extern UINT joy_Y;
 
 struct Node *head, *tail, *food;
-UINT snake_speed = 1;           // Inicia em uma posição/segundo
+float snake_speed = 1.0;           // Inicia em uma posição/segundo
 UINT tail_x, tail_y;    // Marca a posição da cauda da cobra
 
 extern void initJOY(void); 
@@ -142,7 +143,8 @@ void thread_game_entry(ULONG thread_input)
             if  (snake_ate(head, food, direction)) //Comeu a comida
             {
                 head = snake_add(head, food->x, food->y, direction);
-                snake_speed++;
+                if (snake_speed < MAX_SPEED)
+                    snake_speed = snake_speed * (float)1.05;
                 food = new_food(head);
                 flag = 2;   // COMEU
             }
@@ -188,7 +190,7 @@ void thread_joy_entry(ULONG thread_input)
                 dif_y = CENTER_JOY - joy_Y;
             
             // Confere se a mudança é relevante ou se não é uma direção oposta a anterior antes de enviar a nova direção lida
-            if ((dif_x > dif_y) && (dif_x > (CENTER_JOY/4)) && (direction != 1) && (direction != 2))
+            if ((dif_x > dif_y) && (dif_x > (CENTER_JOY/2)) && (direction != 1) && (direction != 2))
             {
                 if (joy_X > CENTER_JOY)         // Direita
                     new_direction = 1;
@@ -198,7 +200,7 @@ void thread_joy_entry(ULONG thread_input)
                 status = tx_queue_send(&joy_updated, &new_direction, TX_WAIT_FOREVER);
                 direction = new_direction;
             }
-            else if ((dif_y > dif_x) && (dif_y > (CENTER_JOY/4)) && (direction != 3) && (direction != 4))
+            else if ((dif_y > dif_x) && (dif_y > (CENTER_JOY/2)) && (direction != 3) && (direction != 4))
             {
                 if (joy_Y > CENTER_JOY)         // Cima
                     new_direction = 3;

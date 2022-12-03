@@ -44,7 +44,7 @@ extern UINT joy_X;
 extern UINT joy_Y;
 
 struct Node *head, *tail, *food;
-float snake_speed = 1.0;           // Inicia em uma posição/segundo
+float snake_speed = 1.5;           // Inicia em uma posição/segundo
 UINT tail_x, tail_y;    // Marca a posição da cauda da cobra
 
 extern void initJOY(void); 
@@ -126,7 +126,7 @@ void thread_game_entry(ULONG thread_input)
     UINT flag = 0;  // Flag = 0 -> Primeira iteração, apenas desenha a cobra
                     // Flag = 1 -> Atualiza a Cobra - NÃO COMEU
                     // Flag = 2 -> Atualiza a Cobra - COMEU
-    UINT size_snake = 195; // Tamanho Inicial
+    UINT size_snake = 5; // Tamanho Inicial
     UINT update = 1;
     
     head = snake_create();
@@ -232,7 +232,7 @@ void thread_joy_entry(ULONG thread_input)
                 direction = new_direction;
             }
            
-            tx_thread_sleep(50);
+            tx_thread_sleep(25);
         }
     }
 }

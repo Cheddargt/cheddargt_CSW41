@@ -10,7 +10,7 @@
 #include "cfaf128x128x16.h"
 #include "tx_api.h"
 
-bool pause = false;
+bool pause = true;
 extern TX_EVENT_FLAGS_GROUP pause_flag;
 extern void print_pause(bool pause);
 
@@ -27,8 +27,10 @@ void initPAUSE(void)
     // Interrupcao          
     GPIOIntEnable(GPIO_PORTL_BASE, GPIO_INT_PIN_1);
     GPIOIntTypeSet(GPIO_PORTL_BASE, GPIO_PIN_1, GPIO_LOW_LEVEL);
-    IntEnable(INT_GPIOL_TM4C129);
-    IntPrioritySet(INT_GPIOL_TM4C129, 0x00);    //Mais importante por parar o jogo
+    IntEnable(INT_GPIOL);
+    IntPrioritySet(INT_GPIOL, 0x05);    //Mais importante por parar o jogo
+
+    IntMasterEnable(); 
 }
 
 void pause_IntHandler(void)

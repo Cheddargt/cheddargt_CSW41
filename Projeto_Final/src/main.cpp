@@ -72,8 +72,7 @@ int main(int argc, char ** argv)
                                         SYSCTL_OSC_MAIN |
                                         SYSCTL_USE_PLL |
                                         SYSCTL_CFG_VCO_240), 120000000);
-   tx_kernel_enter();
-   
+    tx_kernel_enter();  
 }   
 
 void tx_application_define(void *first_unused_memory)
@@ -84,20 +83,20 @@ void tx_application_define(void *first_unused_memory)
     tx_byte_pool_create(&byte_pool_0, "byte pool 0", byte_pool_memory, DEMO_BYTE_POOL_SIZE);
     
     tx_byte_allocate(&byte_pool_0, (VOID **) &pointer, DEMO_STACK_SIZE, TX_NO_WAIT);
-    tx_thread_create(&thread_game, "thread game", thread_game_entry, 1, pointer, DEMO_STACK_SIZE, 
-                        3, 3, TX_NO_TIME_SLICE, TX_AUTO_START);
+    tx_thread_create(&thread_game, "thread game", thread_game_entry, 0, pointer, DEMO_STACK_SIZE, 
+                        4, 4, TX_NO_TIME_SLICE, TX_AUTO_START);
     
     tx_byte_allocate(&byte_pool_0, (VOID **) &pointer, DEMO_STACK_SIZE, TX_NO_WAIT);
-    tx_thread_create(&thread_joy, "thread joy", thread_joy_entry, 2, pointer, DEMO_STACK_SIZE, 
-                        4, 4, TX_NO_TIME_SLICE, TX_AUTO_START);
+    tx_thread_create(&thread_joy, "thread joy", thread_joy_entry, 0, pointer, DEMO_STACK_SIZE, 
+                        3, 3, TX_NO_TIME_SLICE, TX_AUTO_START);
             
     tx_byte_allocate(&byte_pool_0, (VOID **) &pointer, DEMO_STACK_SIZE, TX_NO_WAIT);
-    tx_thread_create(&thread_lcd, "thread lcd", thread_lcd_entry, 2, pointer, DEMO_STACK_SIZE, 
+    tx_thread_create(&thread_lcd, "thread lcd", thread_lcd_entry, 0, pointer, DEMO_STACK_SIZE, 
                         2, 2, TX_NO_TIME_SLICE, TX_AUTO_START);
             
     tx_byte_allocate(&byte_pool_0, (VOID **) &pointer, DEMO_STACK_SIZE, TX_NO_WAIT);
     tx_thread_create(&thread_pause, "thread pause", thread_pause_entry, 0, pointer, DEMO_STACK_SIZE, 
-                        2, 2, TX_NO_TIME_SLICE, TX_AUTO_START);
+                        1, 1, TX_NO_TIME_SLICE, TX_AUTO_START);
             
     tx_byte_allocate(&byte_pool_0, (VOID **) &pointer, DEMO_QUEUE_SIZE*sizeof(ULONG), TX_NO_WAIT);
     tx_queue_create(&joy_updated, "joy update", TX_1_ULONG, pointer, DEMO_QUEUE_SIZE*sizeof(ULONG));
@@ -285,7 +284,6 @@ void thread_pause_entry(ULONG thread_input)
     bool pause_state = false;
     
     initPAUSE();
-    IntMasterEnable(); 
     
     while(1)
     {

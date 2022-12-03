@@ -353,6 +353,7 @@
                     <state>$PROJ_DIR$\..\..\TivaWare_C_Series-2.2.0.295</state>
                     <state>$PROJ_DIR$\..\inc</state>
                     <state>$PROJ_DIR$\..\..\..\..\common\inc</state>
+                    <state>$PROJ_DIR$\..\..\ThreadX\common\inc</state>
                 </option>
                 <option>
                     <name>CCStdIncCheck</name>

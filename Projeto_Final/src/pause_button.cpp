@@ -12,7 +12,6 @@
 
 bool pause = false;
 extern TX_EVENT_FLAGS_GROUP pause_flag;
-extern void pause_IntHandler(void);
 extern void print_pause(bool pause);
 
 void initPAUSE(void)
@@ -32,7 +31,7 @@ void initPAUSE(void)
     IntPrioritySet(INT_GPIOL_TM4C129, 0x00);    //Mais importante por parar o jogo
 }
 
-extern void pause_IntHandler(void)
+void pause_IntHandler(void)
 {      
     int status;
     

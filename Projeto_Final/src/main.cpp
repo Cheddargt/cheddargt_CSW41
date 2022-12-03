@@ -182,6 +182,7 @@ void thread_game_entry(ULONG thread_input)
             if (update)
                 status = tx_queue_send(&update_lcd, &flag, TX_WAIT_FOREVER);
             
+            
             UINT sleep = (UINT)(1000/snake_speed);
             tx_thread_sleep(sleep);
         }
@@ -219,6 +220,7 @@ void thread_joy_entry(ULONG thread_input)
                     new_direction = 2;
                 
                 status = tx_queue_send(&joy_updated, &new_direction, TX_WAIT_FOREVER);
+                
                 direction = new_direction;
             }
             else if ((dif_y > dif_x) && (dif_y > (CENTER_JOY/2)) && (direction != 3) && (direction != 4))
@@ -229,6 +231,7 @@ void thread_joy_entry(ULONG thread_input)
                     new_direction = 4;
                 
                 status = tx_queue_send(&joy_updated, &new_direction, TX_WAIT_FOREVER);
+        
                 direction = new_direction;
             }
            

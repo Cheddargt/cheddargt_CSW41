@@ -64,7 +64,7 @@ extern __weak void DebugMon_Handler(void);
 extern __weak void PendSV_Handler(void);
 extern __weak void SysTick_Handler(void);
 extern __weak void IntDefaultHandler(void);
-extern void pause_IntHandler(void);
+extern __weak void pause_IntHandler(void);
 
 //*****************************************************************************
 //

@@ -42,3 +42,4 @@ LCD_demo/src/cfaf128x128x16.h
 LCD_demo/src/lcd.c
 LCD_demo/src/startup_ewarm.c
 LCD_demo/Tiva.icf
+Projeto_Final/src/ex_interrupts.c

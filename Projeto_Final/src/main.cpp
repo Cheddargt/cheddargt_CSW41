@@ -15,6 +15,8 @@
 #include "snake_list.h"
 #include "driverlib/interrupt.h"
 #include "driverlib/sysctl.h"
+#include "driverlib/gpio.h"
+#include "inc/hw_memmap.h"
 
 
 #define DEMO_STACK_SIZE         1024
@@ -72,7 +74,7 @@ int main(int argc, char ** argv)
                                         SYSCTL_OSC_MAIN |
                                         SYSCTL_USE_PLL |
                                         SYSCTL_CFG_VCO_240), 120000000);
-    tx_kernel_enter(); 
+    tx_kernel_enter();
 }   
 
 void tx_application_define(void *first_unused_memory)
@@ -294,20 +296,12 @@ void thread_pause_entry(ULONG thread_input)
 {   
     UINT status;
     ULONG flag = 0;
-    bool pause_state = false;
     
     initPAUSE();
-    
     while(1)
     {
-        status = tx_event_flags_get(&pause_flag, 0x1, TX_OR_CLEAR, &flag, TX_WAIT_FOREVER);
-                
-        if (pause_state)
-            pause_state = false;
-        else
-            pause_state = true;
-        
-        print_pause(pause_state);
+        status = tx_event_flags_get(&pause_flag, 0x1, TX_OR_CLEAR, &flag, TX_WAIT_FOREVER);       
+        print_pause(pause);
     }
 }
 

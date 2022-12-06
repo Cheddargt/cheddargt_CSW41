@@ -13,6 +13,7 @@
 bool pause = true;
 extern TX_EVENT_FLAGS_GROUP pause_flag;
 extern void print_pause(bool pause);
+void pause_IntHandler(void);
 
 void initPAUSE(void)
 {
@@ -28,7 +29,9 @@ void initPAUSE(void)
     GPIOIntEnable(GPIO_PORTL_BASE, GPIO_INT_PIN_1);
     GPIOIntTypeSet(GPIO_PORTL_BASE, GPIO_PIN_1, GPIO_LOW_LEVEL);
     IntEnable(INT_GPIOL);
-    IntPrioritySet(INT_GPIOL, 0x05);    //Mais importante por parar o jogo
+    IntPrioritySet(INT_GPIOL, 0x00);    //Mais importante por parar o jogo
+    
+    IntRegister(INT_GPIOL, pause_IntHandler);
 
     IntMasterEnable(); 
 }
@@ -36,11 +39,14 @@ void initPAUSE(void)
 void pause_IntHandler(void)
 {      
     int status;
+    GPIOIntDisable(GPIO_PORTL_BASE, GPIO_INT_PIN_1);
     
     if (pause)
         pause = false;
     else
         pause = true;
+   
+    GPIOIntEnable(GPIO_PORTL_BASE, GPIO_INT_PIN_1);
     
     status = tx_event_flags_set(&pause_flag, 0x1, TX_OR);
 }

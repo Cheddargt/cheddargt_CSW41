@@ -2861,9 +2861,6 @@
         <name>$PROJ_DIR$\src\pause_button.cpp</name>
     </file>
     <file>
-        <name>$PROJ_DIR$\src\sistick.cpp</name>
-    </file>
-    <file>
         <name>$PROJ_DIR$\src\snake_list.c</name>
     </file>
     <file>

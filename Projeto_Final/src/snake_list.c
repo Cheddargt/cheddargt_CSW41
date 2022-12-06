@@ -18,15 +18,7 @@ Node* snake_add (Node* head, int x, int y, int direction)
    return new_node;
 }
 
-
-void snake_print (Node* head) 
-{
-    Node* v; 
-    for (v = head; v != NULL; v = v->next) 
-        printf("VX: %d, Y: %d\n", v->x, v->y);
-} 
-
-
+// Libera a cobra
 void snake_free (Node* head) 
 {
     while (head != NULL) {
@@ -36,16 +28,7 @@ void snake_free (Node* head)
     }
 }
 
-int snake_size (Node* head)
-{
-    int n = 0;
-    Node* p;
-    for (p = head; p!=NULL; p = p->next)
-        n++;
-
-    return n;
-}
-
+// Procura por um nó com as coordenadas dos parâmetros.
 Node* snake_search (Node* head , int x, int y)
 {
     Node* i;
@@ -70,10 +53,13 @@ void snake_update (Node* head, int direction)
     {
         if (i != head)
         {
+            // Guarda a direção dessa posição para passar para a próxima e 
+            // atualiza com a direção da posição anterior
             aux = i->direction;
             i->direction = last_dir;
             last_dir = aux;
         }
+        // Atualiza a posição do nó na cobra com base na direção
         switch (i->direction)
         {
             case 1:
@@ -92,6 +78,8 @@ void snake_update (Node* head, int direction)
     }
 }
 
+// Gera uma nova comida em uma posição aleatória do mapa
+// Se for uma posição da cobra, gera outra
 Node* new_food(Node* head)
 {
     Node *food =(Node*)malloc(sizeof(Node));
@@ -112,10 +100,12 @@ Node* new_food(Node* head)
     return food;
 }
 
+// Confere se a cobra vai comer simulando o próximo movimento
 int snake_ate(Node* head, Node* food, int direction)
 {
     int x = head->x;
     int y = head->y;
+    
     switch (direction)
     {
         case 1:

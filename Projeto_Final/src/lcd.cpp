@@ -79,7 +79,7 @@ void initBackground(void)
     GrRectFill(&sContext, &top_wall);
     GrRectFill(&sContext, &bottom_wall);
 
-    // Criar o Background 
+    // Criar o quadriculado do Background 
     for(j = 1; j < (LCD_SIZE / POSITION_SIZE) - 1; j++)
     {
         for(i = 1; i < (LCD_SIZE / POSITION_SIZE) - 1; i++)
@@ -129,14 +129,13 @@ void new_print(uint32_t x, uint32_t y, uint32_t flag)
     else
         GrContextForegroundSet(&sContext, BACKGROUND_INNER_COLOR);
     
-    //new_print.i16XMin++;        // = POSITION_SIZE*x;
     new_print.i16YMin++;        // = POSITION_SIZE*y;
     new_print.i16XMax--;        // = (POSITION_SIZE*(x+1)) - 1;
-    //new_print.i16YMax--;        // = (POSITION_SIZE*(y+1)) - 1;
     
     GrRectFill(&sContext, &new_print);     
 }
 
+// Desenha ou apaga o símbolo de "Pause" no LCD
 void print_pause(bool pause)
 {
     tRectangle pause_ret;
@@ -170,6 +169,7 @@ void print_pause(bool pause)
     }
 }
 
+// Mensagem de Game Over e o tamanho final da cobra
 void game_over(int size)
 {
     tRectangle background;
@@ -200,6 +200,7 @@ void game_over(int size)
     GrStringDraw(&sContext, number_array, -1, 0, (sContext.psFont->ui8Height+2)*4, false);
 }
 
+// Mensagem de You Win e o tamanho final da cobra
 void you_win(void)
 {
     tRectangle background;

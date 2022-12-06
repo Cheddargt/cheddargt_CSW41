@@ -31,22 +31,22 @@ void initPAUSE(void)
     IntEnable(INT_GPIOL);
     IntPrioritySet(INT_GPIOL, 0x00);    //Mais importante por parar o jogo
     
-    IntRegister(INT_GPIOL, pause_IntHandler);
-
-    IntMasterEnable(); 
+    IntRegister(INT_GPIOL, pause_IntHandler);   //Define qual a ISR
+     
+    IntMasterEnable(); // Ativa as interrupções do sistema.
 }
 
 void pause_IntHandler(void)
 {      
-    int status;
-    GPIOIntDisable(GPIO_PORTL_BASE, GPIO_INT_PIN_1);
+    GPIOIntDisable(GPIO_PORTL_BASE, GPIO_INT_PIN_1); // Desativa a interupção
     
+    // Troca o valor da variavel de controle
     if (pause)
         pause = false;
     else
         pause = true;
    
-    GPIOIntEnable(GPIO_PORTL_BASE, GPIO_INT_PIN_1);
+    GPIOIntEnable(GPIO_PORTL_BASE, GPIO_INT_PIN_1); // Reativa a interupção
     
-    status = tx_event_flags_set(&pause_flag, 0x1, TX_OR);
+    tx_event_flags_set(&pause_flag, 0x1, TX_OR); // Acorda a Thread que desenha o Pause no LCD
 }

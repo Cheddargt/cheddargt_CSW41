@@ -41,13 +41,14 @@ UCHAR                   byte_pool_memory[DEMO_BYTE_POOL_SIZE];
 
 UINT ui32SysClock; //Clock em Hz
 
-extern volatile bool pause;
+extern volatile bool pause; // Variavel de controle do Pause
+// X e Y do joystick
 extern UINT joy_X;
 extern UINT joy_Y;
 
-struct Node *head, *tail, *food;
-float snake_speed = 1.5;           // Inicia em uma posição/segundo
-UINT tail_x, tail_y;    // Marca a posição da cauda da cobra
+struct Node *head, *tail, *food;    // Ponteiros para a cabeça e cauda da cobra, assim como a comida atual
+float snake_speed = 1.5;            // Inicia em uma posição e meia por segundo
+UINT tail_x, tail_y;                // Guarda a posição anterior da cauda da cobra (para apagar no LCD)
 
 extern void initJOY(void); 
 extern void updateJOY(void); 
@@ -66,10 +67,10 @@ extern void game_over(int size);
 extern void you_win(void);
 extern int snake_collision(Node *head);
 
-// Main function.
 
 int main(int argc, char ** argv)
 {
+    // Seta o clock e inicializa o TreadX
     ui32SysClock = SysCtlClockFreqSet(( SYSCTL_XTAL_25MHZ |
                                         SYSCTL_OSC_MAIN |
                                         SYSCTL_USE_PLL |
@@ -84,6 +85,7 @@ void tx_application_define(void *first_unused_memory)
     /* Create a byte memory pool from which to allocate the thread stacks.  */
     tx_byte_pool_create(&byte_pool_0, "byte pool 0", byte_pool_memory, DEMO_BYTE_POOL_SIZE);
     
+    // Aloca e cria as tarefas
     tx_byte_allocate(&byte_pool_0, (VOID **) &pointer, DEMO_STACK_SIZE, TX_NO_WAIT);
     tx_thread_create(&thread_game, "thread game", thread_game_entry, 0, pointer, DEMO_STACK_SIZE, 
                         4, 4, TX_NO_TIME_SLICE, TX_AUTO_START);
@@ -99,7 +101,8 @@ void tx_application_define(void *first_unused_memory)
     tx_byte_allocate(&byte_pool_0, (VOID **) &pointer, DEMO_STACK_SIZE, TX_NO_WAIT);
     tx_thread_create(&thread_pause, "thread pause", thread_pause_entry, 0, pointer, DEMO_STACK_SIZE, 
                         1, 1, TX_NO_TIME_SLICE, TX_DONT_START);
-            
+    
+    // Aloca e cria as filas de mensagem
     tx_byte_allocate(&byte_pool_0, (VOID **) &pointer, DEMO_QUEUE_SIZE*sizeof(ULONG), TX_NO_WAIT);
     tx_queue_create(&joy_updated, "joy update", TX_1_ULONG, pointer, DEMO_QUEUE_SIZE*sizeof(ULONG));
     
@@ -112,6 +115,7 @@ void tx_application_define(void *first_unused_memory)
     /* Create a block memory pool to allocate a message buffer from.  */
     tx_block_pool_create(&block_pool_0, "block pool 0", sizeof(ULONG), pointer, DEMO_BLOCK_POOL_SIZE);
     
+    // Cria a event flag que acorda a thread Pause
     tx_event_flags_create(&pause_flag, "flag pause");
     
     /* Allocate a block and release the block memory.  */
@@ -123,13 +127,16 @@ void tx_application_define(void *first_unused_memory)
 
 void thread_game_entry(ULONG thread_input)
 {
-    UINT status, direction = 1; // Inicia movendo para a direita
-    UINT flag = 0;  // Flag = 0 -> Primeira iteração, apenas desenha a cobra
-                    // Flag = 1 -> Atualiza a Cobra - NÃO COMEU
-                    // Flag = 2 -> Atualiza a Cobra - COMEU
-    UINT size_snake = 5; // Tamanho Inicial
-    UINT update = 1;
+    UINT direction = 1;     // Inicia movendo para a direita
     
+    UINT flag = 0;          // Flag = 0 -> Primeira iteração, apenas desenha a cobra
+                            // Flag = 1 -> Atualiza a Cobra - NÃO COMEU
+                            // Flag = 2 -> Atualiza a Cobra - COMEU
+                            
+    UINT size_snake = 5;    // Variavel para controle do tamanho
+    UINT update = 1;        // Flag para update ou não da cobra no LCD
+    
+    // Criando a cobra inicial e a primeira comida
     head = snake_create();
     head = snake_add(head, 3, 8, 1);
     tail = head;
@@ -141,7 +148,8 @@ void thread_game_entry(ULONG thread_input)
     head = snake_add(head, 7, 8, 1);
     food = new_food(head);
     
-    status = tx_queue_send(&update_lcd, &flag, TX_WAIT_FOREVER);
+    // Desenha as estruturas criadas acima no LCD
+    tx_queue_send(&update_lcd, &flag, TX_WAIT_FOREVER);
     
     
     while(1)
@@ -149,20 +157,23 @@ void thread_game_entry(ULONG thread_input)
         while (!pause)
         {
             flag = 1;   // Estado inicial = NÃO COMEU
-            status = tx_queue_receive(&joy_updated, &direction, TX_NO_WAIT);
+            tx_queue_receive(&joy_updated, &direction, TX_NO_WAIT); // Atualiza a direção se houver novo input do Joystick
             
-            if  (snake_ate(head, food, direction)) //Comeu a comida
+            if  (snake_ate(head, food, direction)) //Comeu a comida?
             {
-                head = snake_add(head, food->x, food->y, direction);
+                head = snake_add(head, food->x, food->y, direction); // Adiciona uma posição na cobra, nova cabeça.
+                
                 if (snake_speed < MAX_SPEED)
-                    snake_speed = snake_speed * (float)1.05;
-                food = new_food(head);
-                size_snake++;
-                if (size_snake == 196)
+                    snake_speed = snake_speed * (float)1.05;    //Aumenta a velocidade (se menor que o limite)
+                
+                food = new_food(head);  // Nova Comida
+                size_snake++;           // Tamanho aumenta em 1
+                
+                if (size_snake == 196)  // Se tamanho máximo, ganhou o jogo
                 {
-                    you_win();
-                    //pause = 1;                   
-                    
+                    you_win();                
+                    snake_free(head); //Desaloca a cobra
+                    //Mata as threads
                     tx_thread_terminate(&thread_joy);
                     tx_thread_terminate(&thread_lcd);
                     tx_thread_terminate(&thread_pause);
@@ -172,18 +183,19 @@ void thread_game_entry(ULONG thread_input)
                 }
                 flag = 2;   // COMEU
             }
-            else 
+            else  // Se não comeu, guarda a posição da cauda atual (para o LCD apagar) e atualiza a cobra.
             {
                 tail_x = tail->x;
                 tail_y = tail->y;
                 snake_update(head, direction);
             }
             
-            if ((((head->x) == 0) || ((head->x) == 15) || ((head->y) == 0) || ((head->y) == 15)) || (snake_collision(head))) //Colisão com as paredesou com o corpo
+            if ((((head->x) == 0) || ((head->x) == 15) || ((head->y) == 0) || ((head->y) == 15)) || (snake_collision(head))) //Colisão com as paredes ou com o corpo
             {
-                game_over(snake_size(head));
-                //pause = 1;
-                
+                // Colidiu, jogo acaba
+                game_over(size_snake);
+                snake_free(head);   //Desaloca a cobra
+                //Mata as threads
                 tx_thread_terminate(&thread_joy);
                 tx_thread_terminate(&thread_lcd);
                 tx_thread_terminate(&thread_pause);
@@ -192,11 +204,14 @@ void thread_game_entry(ULONG thread_input)
                 update = 0;
             }
             
-            if (update)
-                status = tx_queue_send(&update_lcd, &flag, TX_WAIT_FOREVER);
+            if (update) // Se tiver que atualizar o LCD, envia mensagem
+                tx_queue_send(&update_lcd, &flag, TX_WAIT_FOREVER);
             
-            
-            UINT sleep = (UINT)(1000/snake_speed);
+            /*  Dorme a tarefa para simular a velocidade da cobra,
+                (1000/snake_speed) é o equivalente a FPS,
+                (0.668*size_snake) é uma correção com o tempo aproximado que a 
+                verificação de colisão leva conforme a cobra aumenta de tamanho */
+            UINT sleep = (UINT)((1000/snake_speed)-(0.668*size_snake));
             tx_thread_sleep(sleep);
         }
     }
@@ -204,8 +219,8 @@ void thread_game_entry(ULONG thread_input)
 
 void thread_joy_entry(ULONG thread_input)
 {
-    UINT status, dif_x = 0, dif_y = 0;
-    ULONG direction = 1, new_direction = 0;
+    UINT dif_x = 0, dif_y = 0;              // Deslocamento nos dois eixos
+    ULONG direction = 1, new_direction = 0; // Direção atual e nova direção lida
     initJOY();
     while(1)
     {
@@ -213,7 +228,7 @@ void thread_joy_entry(ULONG thread_input)
         {
             updateJOY();
             /* direction: 0 -> Centro ; 1 -> Direita ; 2 -> Esquerda ; 3 -> Cima ; 4 -> Baixo */
-            // Calcula a direferença entre a direção atual e ao centro do joystick
+            // Calcula a diferença entre a direção atual e o centro do joystick
             if (joy_X > CENTER_JOY)
                 dif_x = joy_X - CENTER_JOY;
             else
@@ -224,7 +239,7 @@ void thread_joy_entry(ULONG thread_input)
             else
                 dif_y = CENTER_JOY - joy_Y;
             
-            // Confere se a mudança é relevante ou se não é uma direção oposta a anterior antes de enviar a nova direção lida
+            // Confere se a mudança é relevante ou se não é uma direção oposta à anterior antes de enviar a nova direção lida
             if ((dif_x > dif_y) && (dif_x > (CENTER_JOY/2)) && (direction != 1) && (direction != 2))
             {
                 if (joy_X > CENTER_JOY)         // Direita
@@ -232,9 +247,9 @@ void thread_joy_entry(ULONG thread_input)
                 else if (joy_X < CENTER_JOY)    // Esquerda
                     new_direction = 2;
                 
-                status = tx_queue_send(&joy_updated, &new_direction, TX_WAIT_FOREVER);
+                tx_queue_send(&joy_updated, &new_direction, TX_WAIT_FOREVER);   // Envia a nova direção para a thread do jogo
                 
-                direction = new_direction;
+                direction = new_direction; // Atualiza a direção atual
             }
             else if ((dif_y > dif_x) && (dif_y > (CENTER_JOY/2)) && (direction != 3) && (direction != 4))
             {
@@ -243,50 +258,50 @@ void thread_joy_entry(ULONG thread_input)
                 else if (joy_Y < CENTER_JOY)    // Baixo
                     new_direction = 4;
                 
-                status = tx_queue_send(&joy_updated, &new_direction, TX_WAIT_FOREVER);
+                tx_queue_send(&joy_updated, &new_direction, TX_WAIT_FOREVER);   // Envia a nova direção para a thread do jogo
         
-                direction = new_direction;
+                direction = new_direction;  // Atualiza a direção atual
             }
            
-            tx_thread_sleep(25);
+            tx_thread_sleep(25); // Delay entre as leituras
         }
     }
 }
 
 void thread_lcd_entry(ULONG thread_input)
 {
-    UINT COMIDA = 0, COBRA = 1, BACKGROUND = 2;
-    UINT status;
-    ULONG update = 0;
+    UINT COMIDA = 0, COBRA = 1, BACKGROUND = 2; // Flags para "o que o LCD deve desenhar"
+    ULONG update = 0;   // Flag de controle do estado do jogo a ser representado
     initLCD();
-    tx_thread_resume(&thread_pause);
+    tx_thread_resume(&thread_pause); // Com o LCD inicializado, a thread pause pode começar a rodar
     while(1)
     {
         while (!pause)
         {
-            status = tx_queue_receive(&update_lcd, &update, TX_WAIT_FOREVER);
+            // Fica esperando uma nova mensagem para iniciar o update da imagem
+            tx_queue_receive(&update_lcd, &update, TX_WAIT_FOREVER);
             
-            if (update == 0) // Primeira Iteração Apenas desenha a cobra e a comida
+            if (update == 0) // Primeira iteração
             {
-                initBackground();  
-                new_print(3, 8, COBRA);
+                initBackground();       // Desenha o background
+                new_print(3, 8, COBRA); // Desenha as 5 posições da cobra, o inicio é sempre fixo
                 new_print(4, 8, COBRA);
                 new_print(5, 8, COBRA);
                 new_print(6, 8, COBRA);
                 new_print(7, 8, COBRA);
-                new_print(food->x, food->y, COMIDA);
+                new_print(food->x, food->y, COMIDA);    // Desenha a comida
             }
             
-            else if (update == 1)   // Atualiza a Cobra, NÃO COMEU
+            else if (update == 1)   // Atualiza a Cobra quando ela NÃO COMEU
             {
-                new_print(head->x, head->y, COBRA);
-                new_print(tail_x, tail_y, BACKGROUND);
+                new_print(head->x, head->y, COBRA);     // Desenha a cabeça na nova posição
+                new_print(tail_x, tail_y, BACKGROUND);  // Apaga cauda (última posição), com as variaveis salvas pela thread game
             }  
             
-            else if (update == 2)   // Atualiza a Cobra, COMEU
+            else if (update == 2)   // Atualiza a Cobra quando ela COMEU
             {
-                new_print(food->x, food->y, COMIDA);
-                new_print(head->x, head->y, COBRA);
+                new_print(food->x, food->y, COMIDA);    // Desenha a nova comida
+                new_print(head->x, head->y, COBRA);     // Desenha a nova cabeça da cobra
             } 
         }
     }
@@ -294,13 +309,15 @@ void thread_lcd_entry(ULONG thread_input)
 
 void thread_pause_entry(ULONG thread_input)
 {   
-    UINT status;
     ULONG flag = 0;
     
-    initPAUSE();
+    initPAUSE();    
     while(1)
     {
-        status = tx_event_flags_get(&pause_flag, 0x1, TX_OR_CLEAR, &flag, TX_WAIT_FOREVER);       
+        // Espera a event flag da ISR para executar
+        tx_event_flags_get(&pause_flag, 0x1, TX_OR_CLEAR, &flag, TX_WAIT_FOREVER);   
+        
+        // Escreve no LCD o estado atual da variavel pause
         print_pause(pause);
     }
 }

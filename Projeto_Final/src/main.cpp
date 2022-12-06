@@ -317,6 +317,18 @@ void thread_pause_entry(ULONG thread_input)
         // Espera a event flag da ISR para executar
         tx_event_flags_get(&pause_flag, 0x1, TX_OR_CLEAR, &flag, TX_WAIT_FOREVER);   
         
+        if (pause) // Pausa todas as outras threads
+        {
+            tx_thread_suspend(&thread_game);
+            tx_thread_suspend(&thread_lcd);
+            tx_thread_suspend(&thread_joy);
+        }
+        else    // Acorda todas as outras threads
+        {
+            tx_thread_resume(&thread_game);
+            tx_thread_resume(&thread_lcd);
+            tx_thread_resume(&thread_joy);
+        }
         // Escreve no LCD o estado atual da variavel pause
         print_pause(pause);
     }

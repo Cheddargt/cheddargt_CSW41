@@ -112,11 +112,11 @@ void tx_application_define(void *first_unused_memory)
     /* Allocate the memory for a small block pool.  */
     tx_byte_allocate(&byte_pool_0, (VOID **) &pointer, DEMO_BLOCK_POOL_SIZE, TX_NO_WAIT);
     
-    /* Create a block memory pool to allocate a message buffer from.  */
-    tx_block_pool_create(&block_pool_0, "block pool 0", sizeof(ULONG), pointer, DEMO_BLOCK_POOL_SIZE);
-    
     // Cria a event flag que acorda a thread Pause
     tx_event_flags_create(&pause_flag, "flag pause");
+    
+    /* Create a block memory pool to allocate a message buffer from.  */
+    tx_block_pool_create(&block_pool_0, "block pool 0", sizeof(ULONG), pointer, DEMO_BLOCK_POOL_SIZE);
     
     /* Allocate a block and release the block memory.  */
     tx_block_allocate(&block_pool_0, (VOID **) &pointer, TX_NO_WAIT);

@@ -109,12 +109,12 @@ void tx_application_define(void *first_unused_memory)
     tx_byte_allocate(&byte_pool_0, (VOID **) &pointer, DEMO_QUEUE_SIZE*sizeof(ULONG), TX_NO_WAIT);
     tx_queue_create(&update_lcd, "updated lcd", TX_1_ULONG, pointer, DEMO_QUEUE_SIZE*sizeof(ULONG));
     
-    /* Allocate the memory for a small block pool.  */
-    tx_byte_allocate(&byte_pool_0, (VOID **) &pointer, DEMO_BLOCK_POOL_SIZE, TX_NO_WAIT);
-    
     // Cria a event flag que acorda a thread Pause
     tx_event_flags_create(&pause_flag, "flag pause");
     
+    /* Allocate the memory for a small block pool.  */
+    tx_byte_allocate(&byte_pool_0, (VOID **) &pointer, DEMO_BLOCK_POOL_SIZE, TX_NO_WAIT);
+        
     /* Create a block memory pool to allocate a message buffer from.  */
     tx_block_pool_create(&block_pool_0, "block pool 0", sizeof(ULONG), pointer, DEMO_BLOCK_POOL_SIZE);
     
